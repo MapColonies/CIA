@@ -1,0 +1,210 @@
+openapi: 3.0.1
+info:
+  title: Central IDs Allocation
+  description: >-
+    This is a sample server CIA server. You can find out more about CIA at
+    [here](https://github.com/MapColonies/CIA). For this sample, you can use the
+    api key `special-key` to test the authorization filters.
+  contact:
+    name: vitaligi
+    email: 54726763+vitaligi@users.noreply.github.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+servers:
+  - url: 'https://SUBDOMAIN.DOMAIN.TOPLEVELDOMAIN:{port}/{basePath}'
+    description: CIA test server
+    variables:
+      port:
+        enum:
+          - '80'
+          - '443'
+        default: '443'
+      basePath:
+        default: v1
+tags:
+- name: core
+  description: Operations about cores
+paths:
+  /core:
+    summary: Cores Allocated IDs
+    description: Manage allocated IDs for cores
+    get:
+      summary: Get all cores
+      description: Returns an array of all the cores
+      operationId: getCores
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Core'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+      security:
+        - api_key: []
+      tags:
+        - core
+    post:
+      summary: Create core
+      description: Creates a new core with allocated IDs
+      operationId: createCore
+      requestBody:
+        description: Created core object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Core'
+        required: true
+      responses:
+        '201':
+          description: Successful operation
+          content: {}
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+      security:
+        - api_key: []
+      tags:
+        - core
+  /core/{coreId}:
+    summary: Core's allocated IDs
+    description: Handle allocated IDs
+    get:
+      summary: Find core by core ID
+      description: Returns a single core
+      operationId: getCoreByID
+      parameters:
+        - name: coreId
+          in: path
+          description: a core's unique ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Core'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+      security:
+        - api_key: []
+      tags:
+        - core
+    put:
+      summary: Update core
+      description: Updates a single core by core ID
+      operationId: updateCore
+      parameters:
+        - name: coreId
+          in: path
+          description: core that needs to be updated
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successful operation
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+      security:
+        - api_key: []
+      tags:
+        - core
+    delete:
+      summary: Delete core
+      description: Deletes a single core by core ID
+      operationId: deleteCore
+      parameters:
+        - name: coreId
+          in: path
+          description: core that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successful operation
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorModel'
+      security:
+        - api_key: []
+      tags:
+        - core
+components:
+  schemas:
+    Core:
+      type: object
+      required:
+      - coreId
+      properties:
+        id:
+          type: number
+          format: int32
+        coreId:
+          type: string
+          description: a unique core identifier (preferably md5)
+        allocatedIdStart:
+          type: number
+          format: int64
+          description: the begginig of allocated IDs interval (inclusive)
+        allocatedIdEnd:
+          type: number
+          format: int64
+          description: the end of allocated IDs interval (inclusive)
+        allocationDate:
+          type: string
+          format: date-time
+          description: IDs allocation datetime
+        notes:
+          type: string
+          description: general notes
+          maxLength: 3000
+    ErrorModel:
+      type: object
+      required:
+      - message
+      - code
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+          minimum: 100
+          maximum: 600
+      example:
+        {
+          "message": "server error",
+          "code": 500
+        }
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
