@@ -224,6 +224,20 @@
             readOnly: true
             minimum: 1
             example: 5
+          allocatedChangesetIdStart:
+            description: The begginig of changeset allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 1
+          allocatedChangesetIdEnd:
+            description: The end of changeset allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 5
           allocationDateCreated:
             description: IDs allocation created datetime
             type: string
