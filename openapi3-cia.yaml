@@ -66,6 +66,10 @@
                 schema:
                   type: string
                   format: uri
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Core'
           '400':
             description: Invalid core supplied
           '500':
@@ -167,7 +171,8 @@
       Core:
         type: object
         required:
-        - coreId
+        - coreSize
+        - description
         properties:
           id:
             description: id
@@ -180,6 +185,7 @@
             description: Unique core identifier
             type: string
             format: uuid v4
+            readOnly: true
             minLength: 0
             example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000'
           allocatedNodeIdStart:
@@ -250,12 +256,20 @@
             format: date-time
             readOnly: true
             minLength: 0
-          notes:
-            description: General notes
+          coreSize:
+            description: Defines the amount of allocated IDs
             type: string
-            readOnly: true
+            enum:
+              - small
+              - medium
+              - large
+            default: small
+          description:
+            description: General description of the core
+            type: string
             maxLength: 255
-            example: this is a sample local osm IDs allocation
+            minLength: 1
+            example: this is a sample IDs allocation for a core
       Error:
         type: object
         required:
