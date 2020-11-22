@@ -1,0 +1,281 @@
+  openapi: 3.0.1
+  info:
+    title: Central IDs Allocation (CIA)
+    description: >-
+      This is a CIA service API definition. You can find out more about CIA at
+      [here](https://github.com/MapColonies/CIA).
+    contact:
+      name: MapColonies
+      email: mapcolonies@gmail.com
+    license:
+      name: Apache 2.0
+      url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    version: 1.0.0
+  # servers:
+  #   - url: 'https://SUBDOMAIN.DOMAIN.TOPLEVELDOMAIN:{port}/{basePath}'
+  #     description: CIA test server
+  #     variables:
+  #       port:
+  #         enum:
+  #           - '80'
+  #           - '443'
+  #         default: '443'
+  #       basePath:
+  #         default: v1
+  tags:
+  - name: cores
+    description: Operations on cores
+  paths:
+    /cores:
+      summary: Cores Allocated IDs
+      description: Manage allocated IDs for cores
+      get:
+        summary: Get all cores
+        description: Returns an array of all the cores
+        operationId: getCores
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Core'
+          '500':
+            $ref: '#/components/responses/InternalServerError'
+        tags:
+          - cores
+      post:
+        summary: Create core
+        description: Creates a new core with allocated IDs
+        operationId: createCore
+        requestBody:
+          description: Created core object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Core'
+          required: true
+        responses:
+          '201':
+            description: Successful operation
+            headers:
+              Location:
+                description: Location of the new core that was created by the request
+                schema:
+                  type: string
+                  format: uri
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Core'
+          '400':
+            description: Invalid core supplied
+          '500':
+            $ref: '#/components/responses/InternalServerError'
+        tags:
+          - cores
+    /cores/{coreId}:
+      summary: Core's allocated IDs
+      description: Handle allocated IDs
+      get:
+        summary: Find core by core ID
+        description: Returns a single core
+        operationId: getCoreByID
+        parameters:
+          - $ref: '#/components/parameters/coreId'
+        responses:
+          '200':
+            description: Successful operation
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Core'
+          '400':
+            description: Invalid ID supplied
+          '404':
+            description: Core not found
+          '500':
+            $ref: '#/components/responses/InternalServerError'
+        tags:
+          - cores
+      # put:
+      #   summary: Update core
+      #   description: Updates a single core by core ID
+      #   operationId: updateCore
+      #   parameters:
+      #     - name: coreId
+      #       in: path
+      #       description: core that needs to be updated
+      #       required: true
+      #       schema:
+      #         type: string
+      #   requestBody:
+      #     description: Updated core object
+      #     content:
+      #       application/json:
+      #         schema:
+      #           $ref: '#/components/schemas/Core'
+      #     required: true
+      #   responses:
+      #     '204':
+      #       description: Successful operation
+      #     '400':
+      #       description: Invalid ID supplied
+      #     '404':
+      #       description: Core not found
+      #     '500':
+      #       $ref: '#/components/responses/InternalServerError'
+      #   tags:
+      #     - core
+      # delete:
+      #   summary: Delete core
+      #   description: Deletes a single core by core ID
+      #   operationId: deleteCore
+      #   parameters:
+      #     - name: coreId
+      #       in: path
+      #       description: core that needs to be deleted
+      #       required: true
+      #       schema:
+      #         type: string
+      #   responses:
+      #     '204':
+      #       description: Successful operation
+      #     '400':
+      #       description: Invalid core supplied
+      #     '404':
+      #       description: Core not found
+      #     '500':
+      #       $ref: '#/components/responses/InternalServerError'
+      #   tags:
+      #     - core
+  components:
+    parameters:
+      coreId:
+        name: coreId
+        in: path
+        description: a core's unique ID (uuid v4)
+        required: true
+        schema:
+          type: string
+    responses:
+      InternalServerError:
+        description: Internal server error occurred
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+    schemas:
+      Core:
+        type: object
+        required:
+        - coreSize
+        - description
+        properties:
+          id:
+            description: id
+            type: number
+            format: int32
+            readOnly: true
+            minimum: 1
+            example: 1
+          coreId:
+            description: Unique core identifier
+            type: string
+            format: uuid v4
+            readOnly: true
+            minLength: 0
+            example: '11bf5b37-e0b8-42e0-8dcf-dc8c4aefc000'
+          allocatedNodeIdStart:
+            description: The begginig of node allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 1
+          allocatedNodeIdEnd:
+            description: The end of node allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 10
+          allocatedWayIdStart:
+            description: The begginig of way allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 1
+          allocatedWayIdEnd:
+            description: The end of way allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 5
+          allocatedRelationIdStart:
+            description: The begginig of relation allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 1
+          allocatedRelationIdEnd:
+            description: The end of relation allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 5
+          allocatedChangesetIdStart:
+            description: The begginig of changeset allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 1
+          allocatedChangesetIdEnd:
+            description: The end of changeset allocated IDs interval (inclusive)
+            type: number
+            format: int64
+            readOnly: true
+            minimum: 1
+            example: 5
+          allocationDateCreated:
+            description: IDs allocation created datetime
+            type: string
+            format: date-time
+            readOnly: true
+            minLength: 0
+          allocationDateUpdated:
+            description: IDs allocation updated datetime
+            type: string
+            format: date-time
+            readOnly: true
+            minLength: 0
+          coreSize:
+            description: Defines the amount of allocated IDs
+            type: string
+            enum:
+              - small
+              - medium
+              - large
+            default: small
+          description:
+            description: General description of the core
+            type: string
+            maxLength: 255
+            minLength: 1
+            example: this is a sample IDs allocation for a core
+      Error:
+        type: object
+        required:
+        - message
+        properties:
+          message:
+            type: string
+        example:
+          message: "server error"
