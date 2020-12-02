@@ -11,17 +11,21 @@
       name: Apache 2.0
       url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
     version: 1.0.0
-  # servers:
-  #   - url: 'https://SUBDOMAIN.DOMAIN.TOPLEVELDOMAIN:{port}/{basePath}'
-  #     description: CIA test server
-  #     variables:
-  #       port:
-  #         enum:
-  #           - '80'
-  #           - '443'
-  #         default: '443'
-  #       basePath:
-  #         default: v1
+  servers:
+    # - url: 'https://SUBDOMAIN.DOMAIN.TOPLEVELDOMAIN:{port}/{basePath}'
+    # - url: 'https://localhost:{port}/{basePath}'
+    - url: 'https://localhost:1337/v1'
+      description: CIA test server
+      variables:
+        port:
+          enum:
+            - '1337'
+            - '80'
+            - '443'
+          default: '1337'
+        basePath:
+          description: string api version
+          default: v1
   tags:
   - name: cores
     description: Operations on cores
