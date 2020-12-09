@@ -1,19 +1,25 @@
 {
-  "name": "cia",
+  "name": "@map-colonies/cia",
   "version": "0.1.0",
-  "description": "Central IDs Allocation service",
+  "description": "Central IDs allocation service",
   "main": "index.ts",
   "scripts": {
     "test:unit": "jest --coverage --testPathPattern=\"./src/tests/unit/.*.spec.ts\" --reporters='default' --reporters='jest-html-reporters' --watchAll=false",
     "test:integration": "jest --testPathPattern=\"./src/tests/integration/.*.spec.ts\"",
-    "lint": "eslint src/**",
-    "lint:fix": "eslint --fix src/**",
+    "lint": "eslint *.ts src/**",
+    "lint:fix": "eslint --fix *.ts src/**",
     "release": "standard-version",
     "test": "npm run lint && npm run test:unit && npm run test:integration",
-    "build": "tsc --project tsconfig.build.json && copyfiles ./docs ./config dist",
+    "build": "npm run clear && tsc --project tsconfig.build.json && copyfiles ./docs ./config dist",
+    "clear": "rimraf dist",
     "start": "npm run build && node ./dist/index.js",
     "confd": "node ./confd/generate-config.js",
-    "confd:prod": "node ./confd/generate-config.js --environment production"
+    "confd:prod": "node ./confd/generate-config.js --environment production",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:create": "npm run typeorm migration:create -- -n",
+    "typeorm:migrate": "npm run build && npm run typeorm migration:generate -- -n",
+    "typeorm:run": "npm run typeorm migration:run",
+    "typeorm:revert": "npm run typeorm migration:revert"
   },
   "directories": {
     "test": "tests"
@@ -57,8 +63,10 @@
     "jest": "^26.4.2",
     "jest-create-mock-instance": "^1.1.0",
     "jest-html-reporters": "^2.0.3",
+    "rimraf": "^3.0.2",
     "standard-version": "^9.0.0",
     "ts-jest": "^26.3.0",
+    "ts-node": "^9.1.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
@@ -92,10 +100,10 @@
   },
   "eslintConfig": {
     "extends": [
-        "@map-colonies/eslint-config/ts-base"
-      ],
-      "parserOptions": {
-        "project": "./tsconfig.json"
-      }
+      "@map-colonies/eslint-config/ts-base"
+    ],
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    }
   }
 }

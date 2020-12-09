@@ -1,41 +1,55 @@
-import { Entity, Column, PrimaryGeneratedColumn, Generated, CreateDateColumn, UpdateDateColumn, Exclusion } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Generated,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Exclusion,
+} from 'typeorm';
 
 export type CoreSize = 'small' | 'medium' | 'large';
 
 @Entity()
-@Exclusion(`USING gist ("allocatedNodeIDsRange" WITH &&)`)
-@Exclusion(`USING gist ("allocatedWayIDsRange" WITH &&)`)
-@Exclusion(`USING gist ("allocatedRelationIDsRange" WITH &&)`)
-@Exclusion(`USING gist ("allocatedChangesetIDsRange" WITH &&)`)
+@Exclusion(`USING gist ("allocated_node_ids_range" WITH &&)`)
+@Exclusion(`USING gist ("allocated_way_ids_range" WITH &&)`)
+@Exclusion(`USING gist ("allocated_relation_ids_range" WITH &&)`)
+@Exclusion(`USING gist ("allocated_changeset_ids_range" WITH &&)`)
 export class Core {
-    @PrimaryGeneratedColumn()
-    public readonly id!: number;
-    
-    @Column({ type: 'enum', update: false, enum: ['small', 'medium', 'large'], default: 'small' })
-    public coreSize!: CoreSize;
+  @PrimaryGeneratedColumn({ name: 'id' })
+  public readonly id!: number;
 
-    @Column({ type: 'character varying', length: 255 })
-    public description!: string;
+  @Column({
+    name: 'core_size',
+    type: 'enum',
+    update: false,
+    enum: ['small', 'medium', 'large'],
+    default: 'small',
+  })
+  public coreSize!: CoreSize;
 
-    @Column({ type: 'uuid', update: false, unique: true })
-    @Generated('uuid')
-    public readonly coreID!: string;
+  @Column({ name: 'description', type: 'character varying', length: 255 })
+  public description!: string;
 
-    @Column({ type: 'int8range' })
-    private readonly allocatedNodeIDsRange!: string;
+  @Column({ name: 'core_id', type: 'uuid', update: false, unique: true })
+  @Generated('uuid')
+  public readonly coreID!: string;
 
-    @Column({ type: 'int8range' })
-    private readonly allocatedWayIDsRange!: string;
+  @Column({ name: 'allocated_node_ids_range', type: 'int8range' })
+  public readonly allocatedNodeIDsRange!: string;
 
-    @Column({ type: 'int8range' })
-    private readonly allocatedRelationIDsRange!: string;
+  @Column({ name: 'allocated_way_ids_range', type: 'int8range' })
+  public readonly allocatedWayIDsRange!: string;
 
-    @Column({ type: 'int8range' })
-    private readonly allocatedChangesetIDsRange!: string;
+  @Column({ name: 'allocated_relation_ids_range', type: 'int8range' })
+  public readonly allocatedRelationIDsRange!: string;
 
-    @CreateDateColumn()
-    private readonly allocationDateCreated!: string;
+  @Column({ name: 'allocated_changeset_ids_range', type: 'int8range' })
+  public readonly allocatedChangesetIDsRange!: string;
 
-    @UpdateDateColumn()
-    private readonly allocationDateUpdated!: string;
+  @CreateDateColumn({ name: 'allocation_date_created' })
+  private readonly allocationDateCreated!: string;
+
+  @UpdateDateColumn({ name: 'allocation_date_updated' })
+  private readonly allocationDateUpdated!: string;
 }

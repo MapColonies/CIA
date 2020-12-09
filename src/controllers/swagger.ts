@@ -9,7 +9,7 @@ import { config as initDotEnv } from 'dotenv';
 interface SwaggerServer  { 
   [key: string]: unknown,
   url: string;
-};
+}
 
 @injectable()
 export class SwaggerController {
@@ -39,10 +39,11 @@ export class SwaggerController {
   }
 
   private setSwaggerHost(): void {
+    // TODO: what is the purpose of this function?
     initDotEnv();
     const host: string = process.env.HOST ?? 'http://localhost';
     const port: string = process.env.SERVER_PORT ?? '80';
-    const servers = ((this.swaggerDoc.servers) as SwaggerServer[]);
+    const servers = (this.swaggerDoc.servers) as SwaggerServer[];
     servers[0].url = `${host}:${port}`;
   }
 }

@@ -10,7 +10,7 @@ const DEFAULT_PORT = 80;
 async function main(): Promise<void> {
   initDotEnv();
   const port =
-    process.env.SERVER_PORT != null ? parseInt(process.env.SERVER_PORT) : DEFAULT_PORT;
+    process.env.SERVER_PORT != undefined ? parseInt(process.env.SERVER_PORT) : DEFAULT_PORT;
   const app = await getApp();
   const probe = container.resolve(Probe);
   await probe.start(app, port);
