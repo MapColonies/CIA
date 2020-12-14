@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { container } from 'tsyringe';
 import { validate } from 'openapi-validator-middleware';
+import { container } from 'tsyringe';
 import { CoresController } from '../../controllers/cores';
 
 const coresRouter = Router();

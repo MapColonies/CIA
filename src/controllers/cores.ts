@@ -1,57 +1,35 @@
 import { NextFunction, Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
+import { v4 } from 'is-uuid';
+import { defaults, omit, pick } from 'lodash';
 import { injectable } from 'tsyringe';
 import { createConnection, getRepository } from 'typeorm';
-import { defaults, omit, pick } from 'lodash';
-import { v4 } from 'is-uuid';
-import { Core as CoreModel, CoreSize } from '../models/core';
+import { CurrentAllocatedID, IDsRangesSizes, ResponseCore } from '../common/interfaces';
+import { CoreSize } from '../common/types/core';
+import { Core as CoreModel } from '../models/core';
+import { StringValueObject } from '../utils/indexable_types';
+import { getIntRangeBound, rangeFormatter, rangeToObj } from '../utils/postgres_ranges';
 
-interface IDsRangeSizes {
-  small: number;
-  medium: number;
-  large: number;
-}
-
-interface StringIndexType {
-  [index: string]: string;
-}
-
-interface CurrentAllocatedID {
-  [index: string]: number;
-  node: number;
-  way: number;
-  relation: number;
-  changeset: number;
-}
-
-interface ResponseCore {
-  id: number;
-  coreID: string;
-  allocatedNodeIdStart: number;
-  allocatedNodeIdEnd: number;
-  allocatedWayIdStart: number;
-  allocatedWayIdEnd: number;
-  allocatedRelationIdStart: number;
-  allocatedRelationIdEnd: number;
-  allocatedChangesetIdStart: number;
-  allocatedChangesetIdEnd: number;
-  coreSize: CoreSize;
-  description: string;
-}
-
-const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: StringIndexType = {
+const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: StringValueObject = {
   allocatedNodeIDsRange: 'node',
   allocatedWayIDsRange: 'way',
   allocatedRelationIDsRange: 'relation',
   allocatedChangesetIDsRange: 'changeset',
 };
 
-// TODO: Set fixed sizes and consider moving to env vars
-const ID_RANGES_SIZES: IDsRangeSizes = {
-  small: 10000,
-  medium: 1000000,
-  large: 100000000,
-};
+// Extract env vars starting with 'IDS_RANGES_SIZES_' and fallback to hardcoded values
+const IDS_RANGES_SIZES: IDsRangesSizes = defaults(
+  {
+    small: process.env.IDS_RANGES_SIZES_SMALL,
+    medium: process.env.IDS_RANGES_SIZES_MEDIUM,
+    large: process.env.IDS_RANGES_SIZES_LARGE,
+  },
+  {
+    small: 10000,
+    medium: 1000000,
+    large: 100000000,
+  }
+);
 
 @injectable()
 export class CoresController {
@@ -148,8 +126,7 @@ export class CoresController {
     Object.entries(allocatedIDsRange).forEach(
       ([coreModelColumn, lastIDAllocationRange]) => {
         // Extract upper bound of IDs allocation range and subtract one, because the range's upper bound is not inclusive
-        const upperBound =
-          parseInt((lastIDAllocationRange as string).split(',')[1]) - 1;
+        const upperBound = getIntRangeBound(lastIDAllocationRange as string, 'upper');
 
         // Update the state of allocated IDs
         CoresController.currentAllocatedIDs[
@@ -159,46 +136,45 @@ export class CoresController {
     );
   }
 
-
-  private rangeToObj(startKey: string, endKey: string, range: string): Record<string, number> {
-    const rangeArray = range
-      .substring(1, range.length - 1)
-      .split(',').map(v => parseInt(v));
-    const idsRange: Record<string, number> = {};
-    idsRange[startKey] = rangeArray[0];
-    idsRange[endKey] = rangeArray[1] - 1; // Postgresql default range end is open, so we substract 1
-    return idsRange;
-  }
-
   private modifyCoreRangesToCoreEnds(core: CoreModel): ResponseCore {
-    const partialResponseCore = omit(core, ['allocatedNodeIDsRange', 'allocatedWayIDsRange', 'allocatedRelationIDsRange', 'allocatedChangesetIDsRange']) as ResponseCore;
-    return defaults(partialResponseCore, 
-      this.rangeToObj('allocatedNodeIdStart', 'allocatedNodeIdEnd', core.allocatedNodeIDsRange),
-      this.rangeToObj('allocatedWayIdStart', 'allocatedWayIdEnd', core.allocatedWayIDsRange),
-      this.rangeToObj('allocatedRelationIdStart', 'allocatedRelationIdEnd', core.allocatedRelationIDsRange),
-      this.rangeToObj('allocatedChangesetIdStart', 'allocatedChangesetIdEnd', core.allocatedChangesetIDsRange));
+    const partialResponseCore = omit(core, [
+      'allocatedNodeIDsRange',
+      'allocatedWayIDsRange',
+      'allocatedRelationIDsRange',
+      'allocatedChangesetIDsRange',
+    ]) as ResponseCore;
+    const responseCore = defaults(
+      partialResponseCore,
+      rangeToObj(
+        'allocatedNodeIdStart',
+        'allocatedNodeIdEnd',
+        core.allocatedNodeIDsRange
+      ),
+      rangeToObj(
+        'allocatedWayIdStart',
+        'allocatedWayIdEnd',
+        core.allocatedWayIDsRange
+      ),
+      rangeToObj(
+        'allocatedRelationIdStart',
+        'allocatedRelationIdEnd',
+        core.allocatedRelationIDsRange
+      ),
+      rangeToObj(
+        'allocatedChangesetIdStart',
+        'allocatedChangesetIdEnd',
+        core.allocatedChangesetIDsRange
+      )
+    );
+    return responseCore;
   }
 
-  /**
-   *
-   * @param start
-   * @param end
-   */
-  private rangeFormatter(start: number, end: number): string {
-    return `[${start}, ${end}]`;
-  }
-
-  /**
-   *
-   * @param lastID
-   * @param coreSize
-   */
   private allocateIDsRange(lastID: number, coreSize: CoreSize): string {
-    return this.rangeFormatter(lastID + 1, lastID + ID_RANGES_SIZES[coreSize]); // Format range to Postgresql range format
+    return rangeFormatter(lastID + 1, lastID + IDS_RANGES_SIZES[coreSize]); // Format range to Postgresql range format
   }
 
   private allocateAllIDsRange(core: CoreModel, coreSize: CoreSize): CoreModel {
-    const allocatedIDsRanges: StringIndexType = {};
+    const allocatedIDsRanges: StringValueObject = {};
     Object.entries(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE).forEach(
       ([coreModelColumn, idStateType]) => {
         allocatedIDsRanges[coreModelColumn] = this.allocateIDsRange(
@@ -206,7 +182,7 @@ export class CoresController {
           coreSize
         );
         CoresController.currentAllocatedIDs[idStateType] +=
-          ID_RANGES_SIZES[coreSize]; // Update current ID state
+          IDS_RANGES_SIZES[coreSize]; // Update current ID state
       }
     );
 

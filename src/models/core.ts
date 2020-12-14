@@ -1,14 +1,7 @@
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  Generated,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Exclusion,
+  Column, CreateDateColumn, Entity, Exclusion, Generated, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
-
-export type CoreSize = 'small' | 'medium' | 'large';
+import { CoreSize } from '../common/types/core';
 
 @Entity()
 @Exclusion(`USING gist ("allocated_node_ids_range" WITH &&)`)

@@ -2,13 +2,25 @@
 Central ID Allocation service
 
 ## Usage
-To run this service run `npm start`, if used inside a container run
+To run this service locally use `npm start`. To run in a container
+```shell
+git clone git@github.com:MapColonies/CIA.git
+cd CIA
+docker build -t cia:latest .
+docker run -p 8080:8080 --rm -it --env-file ./ormconfig.prod.env cia:latest
+```
 
 ## Configuration
-Copy `.env.example` to `.env` and set your applications settings
-* `SERVER_PORT` - application port e.g. `1337`
+### Local (Dev) Deployment
+Copy `.env.example` to `.env` and set your applications settings to the following environment variables
+* `SERVER_PORT` - application port e.g. `8080`
 * `HOST` - hostname e.g. `http://localhost`
 * `NODE_ENV` - `development` or `production`
+
+The following environment variables are optional settings for the application
+* `IDS_RANGES_SIZES_SMALL` - definition of a small IDs allocation range e.g. `1000`
+* `IDS_RANGES_SIZES_MEDIUM` - definition of a medium IDs allocation range e.g. `1000000`
+* `IDS_RANGES_SIZES_LARGE` - definition of a large IDs allocation range e.g. `1000000000`
 
 Copy `ormconfig.env.example` to `ormconfig.env` and modify the environment variables to fit your connection parameters to Postgresql DB instance, see [ormconfig.env](https://typeorm.io/#/using-ormconfig/using-environment-variables) for more info.
 * `TYPEORM_CONNECTION` - DB type, currently only `postgres` is supported
@@ -17,6 +29,9 @@ Copy `ormconfig.env.example` to `ormconfig.env` and modify the environment varia
 * `TYPEORM_PASSWORD` - e.g. `Aa123456`
 * `TYPEORM_DATABASE` - e.g. `postgres`
 * `TYPEORM_PORT` - e.g. `5432`
+
+### Production Deployment
+Set environment variables as above and copy `ormconfig.prod.env.example` to `ormconfig.prod.env` and pass it to `docker run` as in [Usage](#Usage).
 
 ## Migrations
 Please follow best practices when writing and deploying migrations. Please use [these](http://ryanogles.by/database-migrations-best-practices/) best practices on how to commit migrations to source control.
