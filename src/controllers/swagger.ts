@@ -1,10 +1,10 @@
-import swaggerUi from 'swagger-ui-express';
 import { get } from 'config';
-import { MCLogger } from '@map-colonies/mc-logger';
-import { Request, Response, RequestHandler } from 'express';
-import { load } from 'yamljs';
-import { injectable, delay, inject } from 'tsyringe';
 import { config as initDotEnv } from 'dotenv';
+import { Request, RequestHandler, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { delay, inject, injectable } from 'tsyringe';
+import { load } from 'yamljs';
+import { MCLogger } from '@map-colonies/mc-logger';
 
 interface SwaggerServer  { 
   [key: string]: unknown,
