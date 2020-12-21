@@ -2,34 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
 import { v4 } from 'is-uuid';
 import { defaults, omit, pick } from 'lodash';
+import { IDS_RANGES_SIZES, COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE } from 'src/common/constants/constants';
+import { StringValueObject } from 'src/common/types/indexable_types';
 import { injectable } from 'tsyringe';
 import { createConnection, getRepository } from 'typeorm';
-import { CurrentAllocatedID, IDsRangesSizes, ResponseCore } from '../common/interfaces';
+import { CurrentAllocatedID, ResponseCore } from '../common/interfaces';
 import { CoreSize } from '../common/types/core';
 import { Core as CoreModel } from '../models/core';
-import { StringValueObject } from '../utils/indexable_types';
 import { getIntRangeBound, rangeFormatter, rangeToObj } from '../utils/postgres_ranges';
-
-const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: StringValueObject = {
-  allocatedNodeIDsRange: 'node',
-  allocatedWayIDsRange: 'way',
-  allocatedRelationIDsRange: 'relation',
-  allocatedChangesetIDsRange: 'changeset',
-};
-
-// Extract env vars starting with 'IDS_RANGES_SIZES_' and fallback to hardcoded values
-const IDS_RANGES_SIZES: IDsRangesSizes = defaults(
-  {
-    small: process.env.IDS_RANGES_SIZES_SMALL,
-    medium: process.env.IDS_RANGES_SIZES_MEDIUM,
-    large: process.env.IDS_RANGES_SIZES_LARGE,
-  },
-  {
-    small: 10000,
-    medium: 1000000,
-    large: 100000000,
-  }
-);
 
 @injectable()
 export class CoresController {
@@ -41,7 +21,9 @@ export class CoresController {
   };
 
   public constructor() {
-    void this.initialize();
+    this.initialize().then().catch(err => {
+      console.error(err);
+    })
   }
 
   public async getCores(
@@ -134,6 +116,8 @@ export class CoresController {
         ] = upperBound;
       }
     );
+
+    return Promise.resolve();
   }
 
   private modifyCoreRangesToCoreEnds(core: CoreModel): ResponseCore {

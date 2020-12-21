@@ -8,6 +8,7 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
   const [lower, upper] = range.split(',');
   let add = 0;
   let end;
+
   if (bound === 'lower') {
     const lowerBoundInclusion: Inclusion = lower.startsWith('[') ? 'closed' : 'open';
     end = Number(lower.substring(1, lower.length));
@@ -19,6 +20,7 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
     if (inclusion === 'closed') add -= upperBoundInclusion === 'closed' ? 0 : 1;
     else add += upperBoundInclusion === 'open' ? 0 : 1;
   }
+  
   return end + add;
 }
 
