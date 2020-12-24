@@ -7,11 +7,7 @@ import { Core as CoreModel } from '../models/core';
 
 @injectable()
 export class CoresController {
-  private readonly coreManager: CoreManager;
-
-  public constructor() {
-    this.coreManager = new CoreManager();
-  }
+  public constructor(private readonly coreManager: CoreManager) {}
 
   public async getCores(
     req: Request,

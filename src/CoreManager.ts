@@ -1,18 +1,21 @@
 import { defaults, omit, pick } from 'lodash';
-import { createConnection, FindManyOptions, FindOneOptions, getRepository } from 'typeorm';
+import { inject, injectable } from 'tsyringe';
+import { Repository } from 'typeorm';
 import {
-    COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, IDS_RANGES_SIZES
+  COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE,
+  IDS_RANGES_SIZES
 } from './common/constants/constants';
 import { CurrentAllocatedID, ResponseCore } from './common/interfaces';
 import { CoreSize } from './common/types/core';
 import { StringValueObject } from './common/types/indexable_types';
 import { Core as CoreModel } from './models/core';
 import {
-    getIntRangeBound,
-    rangeFormatter,
-    rangeToObj
+  getIntRangeBound,
+  rangeFormatter,
+  rangeToObj
 } from './utils/postgres_ranges';
 
+@injectable()
 export class CoreManager {
   private static currentAllocatedIDs: CurrentAllocatedID = {
     node: 0,
@@ -21,32 +24,32 @@ export class CoreManager {
     changeset: 0,
   };
 
-  public constructor() {
+  public constructor(
+    @inject('CoreRepository') private readonly repository: Repository<CoreModel>
+  ) {
     void this.initialize();
   }
 
   public async allocateIDs(requestedCore: CoreModel): Promise<CoreModel> {
     const calculatedCore = this.allocateAllIDsRange(requestedCore);
-    const createdCore = getRepository(CoreModel).create(calculatedCore);
-    const savedCore = await getRepository(CoreModel).save(createdCore);
+    const createdCore = this.repository.create(calculatedCore);
+    const savedCore = await this.repository.save(createdCore);
     return savedCore;
   }
 
   public async findCores(): Promise<ResponseCore[]> {
-    const cores = await getRepository(CoreModel).find();
+    const cores = await this.repository.find();
     return cores.map((core) => this.generateResponseCore(core));
   }
 
   public async findCoreById(coreId: string): Promise<ResponseCore | undefined> {
-    const core = await getRepository(CoreModel).findOne(coreId);
+    const core = await this.repository.findOne(coreId);
     return core ? this.generateResponseCore(core) : undefined;
   }
 
   private async initialize(): Promise<void> {
-    await createConnection();
-
     // Return to last allocated IDs state by querying the database if possible
-    const lastAllocation = await getRepository(CoreModel).findOne({
+    const lastAllocation = await this.repository.findOne({
       order: { id: 'DESC' },
     });
 
