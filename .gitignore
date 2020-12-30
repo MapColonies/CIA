@@ -1,12 +1,8 @@
 # Custom gitignors ignores goes here, below
 jest_html_reporters.html
 
-#CONFD
+# Config
 config
-confd/**
-!confd/*.js
-!confd/*.tmpl
-!confd/*.toml
 
 #IDE
 *code-workspace

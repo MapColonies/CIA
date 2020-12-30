@@ -1,29 +1,17 @@
-import { CoreSize } from './types/core';
+import { ILogMethod } from '@map-colonies/mc-logger';
 
-export interface CurrentAllocatedID {
-  [index: string]: number;
-  node: number;
-  way: number;
-  relation: number;
-  changeset: number;
-}
-export interface IDsRangesSizes {
-  small: number;
-  medium: number;
-  large: number;
+export interface ILogger {
+  log: ILogMethod;
 }
 
-export interface ResponseCore {
-  id: number;
-  coreID: string;
-  allocatedNodeIdStart: number;
-  allocatedNodeIdEnd: number;
-  allocatedWayIdStart: number;
-  allocatedWayIdEnd: number;
-  allocatedRelationIdStart: number;
-  allocatedRelationIdEnd: number;
-  allocatedChangesetIdStart: number;
-  allocatedChangesetIdEnd: number;
-  coreSize: CoreSize;
-  description: string;
+export interface IConfig {
+  get: <T>(setting: string) => T;
+  has: (setting: string) => boolean;
+}
+
+export interface SwaggerConfig {
+  filePath: string;
+  basePath: string;
+  jsonPath: string;
+  uiPath: string;
 }

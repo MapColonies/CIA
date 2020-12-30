@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { validate } from 'openapi-validator-middleware';
 import { FactoryFunction } from 'tsyringe';
 import { CoresController } from '../../controllers/cores';
 
@@ -11,12 +10,12 @@ const coresRoutesFactory: FactoryFunction<Router> = (
 
   coresRouter
     .route('/cores')
-    .get(validate, controller.getCores.bind(controller))
-    .post(validate, controller.createCore.bind(controller));
+    .get(controller.getCores.bind(controller))
+    .post(controller.createCore.bind(controller));
 
   coresRouter
     .route('/cores/:coreId')
-    .get(validate, controller.getCoreByID.bind(controller));
+    .get(controller.getCoreByID.bind(controller));
 
   return coresRouter;
 };

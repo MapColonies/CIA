@@ -1,7 +1,8 @@
 import {
   Column, CreateDateColumn, Entity, Exclusion, Generated, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
-import { CoreSize } from '../common/types/core';
+
+export type CoreSize = "small" | "medium" | "large";
 
 @Entity()
 @Exclusion(`USING gist ("allocated_node_ids_range" WITH &&)`)

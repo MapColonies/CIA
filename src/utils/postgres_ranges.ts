@@ -1,4 +1,5 @@
-import { Bound, Inclusion } from '../common/types/range';
+type Bound = 'upper' | 'lower';
+type Inclusion = 'open' | 'closed';
 
 export function rangeFormatter(start: number, end: number, inclusion: Inclusion = 'closed'): string {
     return inclusion === 'closed' ? `[${start}, ${end}]` : `(${start}, ${end})`;

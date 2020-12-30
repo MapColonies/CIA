@@ -2,11 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import HttpStatus from 'http-status-codes';
 import { v4 } from 'is-uuid';
 import { injectable } from 'tsyringe';
-import { CoreManager } from '../core/CoreManager';
-import { Core as CoreModel } from '../core/models/core';
+import { CoreManager } from '../CoreManager';
+import { Core as CoreModel } from '../../core/models/core';
 
 @injectable()
-
 export class CoresController {
   public constructor(private readonly coreManager: CoreManager) {}
 

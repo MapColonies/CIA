@@ -1,6 +1,5 @@
 import { defaults } from 'lodash';
-import { StringValueObject } from 'src/common/types/indexable_types';
-import { IDsRangesSizes } from '../interfaces';
+import { IDsRangesSizes } from 'src/core/interfaces';
 
 // Extract env vars starting with 'IDS_RANGES_SIZES_' and fallback to hardcoded values
 export const IDS_RANGES_SIZES: IDsRangesSizes = defaults(
@@ -16,9 +15,16 @@ export const IDS_RANGES_SIZES: IDsRangesSizes = defaults(
   }
 );
 
-export const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: StringValueObject = {
+export const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: Record<string, string> = {
   allocatedNodeIDsRange: 'node',
   allocatedWayIDsRange: 'way',
   allocatedRelationIDsRange: 'relation',
   allocatedChangesetIDsRange: 'changeset',
 };
+
+export const DEFAULT_SERVER_PORT = 80;
+
+export enum Services {
+  LOGGER = 'ILogger',
+  CONFIG = 'IConfig',
+}

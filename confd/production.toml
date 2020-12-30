@@ -1,8 +1,0 @@
-[template]
-src = "production.tmpl"
-dest = "/config/production.json"
-keys = [
-    "/configuration/logger/level",
-    "/configuration/swagger/json/path",
-    "/configuration/swagger/ui/path"
-]

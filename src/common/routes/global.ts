@@ -1,11 +1,12 @@
 import { Router } from 'express';
-// import { swaggerRouter } from './swagger';
 import { container } from 'tsyringe';
-import { coresRoutesFactory } from './v1/cores';
+import { coresRoutesFactory } from '../../core/routers/v1/cores';
+import { swaggerRouterFactory } from './swagger';
 
 const globalRoutesFactory = (): Router => {
     const globalRouter = Router();
-    // globalRouter.use(swaggerRouter);
+    // TODO: change swagger to openapi
+    globalRouter.use(swaggerRouterFactory(container));
     globalRouter.use('/api/v1', coresRoutesFactory(container));
     return globalRouter;
 }
