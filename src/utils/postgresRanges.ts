@@ -25,9 +25,9 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
   return end + add;
 }
 
-export function rangeToObj(startKey: string, endKey: string, range: string): Record<string, number> {
+export function rangeToObj(startKey: string, endKey: string, closedRange: string): Record<string, number> {
   const idsRange: Record<string, number> = {};
-  idsRange[startKey] = getIntRangeBound(range, 'lower');
-  idsRange[endKey] = getIntRangeBound(range, 'upper');
+  idsRange[startKey] = getIntRangeBound(closedRange, 'lower');
+  idsRange[endKey] = getIntRangeBound(closedRange, 'upper');
   return idsRange;
 }

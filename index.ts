@@ -4,7 +4,6 @@ import { Probe } from '@map-colonies/mc-probe';
 import config from 'config';
 import { container } from 'tsyringe';
 import { getApp } from './src/app';
-import { Services } from './src/common/constants';
 
 const DEFAULT_PORT = 8080;
 

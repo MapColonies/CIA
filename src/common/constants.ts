@@ -1,19 +1,9 @@
-import { defaults } from 'lodash';
-import { IDsRangesSizes } from 'src/core/interfaces';
+export const DEFAULT_SERVER_PORT = 80;
 
-// Extract env vars starting with 'IDS_RANGES_SIZES_' and fallback to hardcoded values
-export const IDS_RANGES_SIZES: IDsRangesSizes = defaults(
-  {
-    small: process.env.IDS_RANGES_SIZES_SMALL,
-    medium: process.env.IDS_RANGES_SIZES_MEDIUM,
-    large: process.env.IDS_RANGES_SIZES_LARGE,
-  },
-  {
-    small: 10000,
-    medium: 1000000,
-    large: 100000000,
-  }
-);
+export enum Services {
+  LOGGER = 'ILogger',
+  CONFIG = 'IConfig',
+}
 
 export const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: Record<string, string> = {
   allocatedNodeIDsRange: 'node',
@@ -21,10 +11,3 @@ export const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: Record<string, string> = {
   allocatedRelationIDsRange: 'relation',
   allocatedChangesetIDsRange: 'changeset',
 };
-
-export const DEFAULT_SERVER_PORT = 80;
-
-export enum Services {
-  LOGGER = 'ILogger',
-  CONFIG = 'IConfig',
-}

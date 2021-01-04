@@ -13,17 +13,17 @@ export interface IDsRangesSizes {
   large: number;
 }
 
-export interface ResponseCore {
-  id: number;
-  coreID: string;
-  allocatedNodeIdStart: number;
-  allocatedNodeIdEnd: number;
-  allocatedWayIdStart: number;
-  allocatedWayIdEnd: number;
-  allocatedRelationIdStart: number;
-  allocatedRelationIdEnd: number;
-  allocatedChangesetIdStart: number;
-  allocatedChangesetIdEnd: number;
-  coreSize: CoreSize;
-  description: string;
+export interface IResponseCore {
+  readonly id: number;
+  readonly coreID: string;
+  readonly allocatedNodeIdStart: number;
+  readonly allocatedNodeIdEnd: number;
+  readonly allocatedWayIdStart: number;
+  readonly allocatedWayIdEnd: number;
+  readonly allocatedRelationIdStart: number;
+  readonly allocatedRelationIdEnd: number;
+  readonly allocatedChangesetIdStart: number;
+  readonly allocatedChangesetIdEnd: number;
+  readonly coreSize: CoreSize;
+  readonly description: string;
 }

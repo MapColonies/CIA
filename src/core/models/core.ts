@@ -42,7 +42,7 @@ export class Core {
   public readonly allocatedChangesetIDsRange!: string;
 
   @CreateDateColumn({ name: 'allocation_date_created' })
-  private readonly allocationDateCreated!: string;
+  private readonly allocationDateCreated!: string; // TODO: check if type can be changed to Date
 
   @UpdateDateColumn({ name: 'allocation_date_updated' })
   private readonly allocationDateUpdated!: string;

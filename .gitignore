@@ -1,5 +1,5 @@
 # Custom gitignors ignores goes here, below
-jest_html_reporters.html
+reports
 
 # Config
 config

@@ -14,7 +14,7 @@ info:
 servers:
   # - url: 'https://SUBDOMAIN.DOMAIN.TOPLEVELDOMAIN:{port}/{basePath}'
   # - url: 'https://localhost:{port}/{basePath}'
-  - url: http://localhost:8080/v1
+  - url: http://localhost:8080/api/v1
     description: CIA test server
     variables:
       port:
@@ -164,6 +164,7 @@ components:
       required: true
       schema:
         type: string
+        format: uuid
   responses:
     InternalServerError:
       description: Internal server error occurred
@@ -274,6 +275,9 @@ components:
           maxLength: 255
           minLength: 1
           example: this is a sample IDs allocation for a core
+        obj:
+          type: object
+          additionalProperties: true
     Error:
       type: object
       required:

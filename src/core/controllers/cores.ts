@@ -1,69 +1,58 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler } from 'express';
 import HttpStatus from 'http-status-codes';
-import { v4 } from 'is-uuid';
+import { HttpError } from 'src/common/errors';
+import { ParamsDictionary } from 'express-serve-static-core';
 import { injectable } from 'tsyringe';
-import { CoreManager } from '../CoreManager';
-import { Core as CoreModel } from '../../core/models/core';
+import { Core as CoreModel, CoreSize } from '../../core/models/core';
+import { CoreManager } from '../coreManager';
+import { IResponseCore } from '../interfaces';
+import { CoreNotFoundError } from '../models/errors';
+
+type GetCoresHandler = RequestHandler<ParamsDictionary, IResponseCore[]>;
+type CreateCoreHandler = RequestHandler<ParamsDictionary, IResponseCore, { coreSize: CoreSize; description: string }>;
+type GetCoreByIdHandler = RequestHandler<ParamsDictionary, IResponseCore>;
 
 @injectable()
 export class CoresController {
   public constructor(private readonly coreManager: CoreManager) {}
 
-  public async getCores(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public getCores: GetCoresHandler = async (req, res, next) => {
     try {
       const cores = await this.coreManager.findCores();
       res.status(HttpStatus.OK).json(cores);
     } catch (error) {
       next(error);
     }
-  }
+  };
 
-  public async createCore(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
+  public getCoreByID: GetCoreByIdHandler = async (req, res, next) => {
+    let core: IResponseCore;
+
     try {
-      const coreModel = req.body as CoreModel;
+      core = await this.coreManager.findCoreById(req.params.coreId);
+    } catch (error) {
+      if (error instanceof CoreNotFoundError) (error as HttpError).status = HttpStatus.NOT_FOUND;
 
-      if (!coreModel.description)
-        return res.status(HttpStatus.BAD_REQUEST).end();
+      return next(error);
+    }
+    res.status(HttpStatus.OK).json(core);
+  };
+  
+  public createCore: CreateCoreHandler = async (req, res, next) => {
+    const coreModel = req.body;
+    let core: IResponseCore;
 
-      const savedCore = await this.coreManager.allocateIDs({
-        coreSize: (coreModel.coreSize = 'small'),
+    try {
+      core = await this.coreManager.allocateIDs({
+        coreSize: coreModel.coreSize,
         description: coreModel.description,
       } as CoreModel);
-
-      const host = req.headers?.host ?? req.hostname;
-      const locationHeader = `${req.protocol}://${host}${req.baseUrl}/cores/${savedCore.coreID}`;
-      res
-        .status(HttpStatus.CREATED)
-        .header('Location', locationHeader)
-        .json(savedCore);
     } catch (error) {
-      next(error);
+      return next(error);
     }
-  }
 
-  public async getCoreByID(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      if (!v4(req.params.coreId))
-        return res.status(HttpStatus.BAD_REQUEST).end();
-
-      const core = await this.coreManager.findCoreById(req.params.coreId);
-
-      if (core) res.status(HttpStatus.OK).json(core);
-      else res.status(HttpStatus.NOT_FOUND).end();
-    } catch (error) {
-      next(error);
-    }
-  }
+    const host = req.headers?.host ?? req.hostname;
+    const locationHeader = `${req.protocol}://${host}${req.baseUrl}/cores/${core.coreID}`;
+    res.status(HttpStatus.CREATED).header('Location', locationHeader).json(core);
+  };
 }

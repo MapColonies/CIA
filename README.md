@@ -18,11 +18,11 @@ Copy `.env.example` to `.env` and set your applications settings to the followin
 * `NODE_ENV` - `development` or `production`
 
 The following environment variables are optional settings for the application
-* `IDS_RANGES_SIZES_SMALL` - definition of a small IDs allocation range e.g. `1000`
-* `IDS_RANGES_SIZES_MEDIUM` - definition of a medium IDs allocation range e.g. `1000000`
-* `IDS_RANGES_SIZES_LARGE` - definition of a large IDs allocation range e.g. `1000000000`
+* `CORE_IDS_RANGES_SIZES_SMALL` - definition of a small IDs allocation range e.g. `1000`
+* `CORE_IDS_RANGES_SIZES_MEDIUM` - definition of a medium IDs allocation range e.g. `1000000`
+* `CORE_IDS_RANGES_SIZES_LARGE` - definition of a large IDs allocation range e.g. `1000000000`
 
-Copy `ormconfig.env.example` to `ormconfig.env` and modify the environment variables to fit your connection parameters to Postgresql DB instance, see [ormconfig.env](https://typeorm.io/#/using-ormconfig/using-environment-variables) for more info.
+Edit `ormconfig.json` and modify the environment variables to fit your connection parameters to Postgresql DB instance, see [ormconfig.env](https://typeorm.io/#/using-ormconfig/using-environment-variables) for more info.
 * `TYPEORM_CONNECTION` - DB type, currently only `postgres` is supported
 * `TYPEORM_HOST` - e.g. `localhost`
 * `TYPEORM_USERNAME` - e.g. `postgres`
