@@ -3,10 +3,11 @@ import HttpStatus from 'http-status-codes';
 import { HttpError } from 'src/common/errors';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { injectable } from 'tsyringe';
-import { Core as CoreModel, CoreSize } from '../../core/models/core';
+import { Core as CoreModel } from '../../core/models/core';
 import { CoreManager } from '../coreManager';
 import { IResponseCore } from '../interfaces';
 import { CoreNotFoundError } from '../models/errors';
+import { CoreSize } from '../types';
 
 type GetCoresHandler = RequestHandler<ParamsDictionary, IResponseCore[]>;
 type CreateCoreHandler = RequestHandler<ParamsDictionary, IResponseCore, { coreSize: CoreSize; description: string }>;

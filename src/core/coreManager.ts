@@ -3,7 +3,7 @@ import { inject, injectable } from 'tsyringe';
 import { Repository } from 'typeorm';
 import { Services } from '../common/constants';
 import { rangeFormatter } from '../utils/postgresRanges';
-import { DEFAULT_IDS } from './constants';
+import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, DEFAULT_IDS } from './constants';
 import { IDsRangesSizes, IResponseCore } from './interfaces';
 import { Core as CoreModel } from './models/core';
 import { CoreNotFoundError } from './models/errors';
@@ -56,14 +56,13 @@ export class CoreManager {
   }
 
   private allocateAllIDsRange(core: CoreModel): Partial<CoreModel> {
-    // const columnToTypeMapping = Object.entries(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE);
-    const columnToTypeMapping = Object.entries(this.currentAllocatedIDs);
+    const columnToTypeMapping = Object.entries(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE);
 
     // Create an object with allocated IDs ranges for all ID columns
     const allocatedIDsRanges = columnToTypeMapping.reduce(
       (o, [coreModelColumn, idStateType]) => ({
         ...o,
-        [coreModelColumn]: this.allocateIDsRange(this.currentAllocatedIDs[coreModelColumn as IDTypes], this.idsRangesSizes[core.coreSize]),
+        [coreModelColumn]: this.allocateIDsRange(this.currentAllocatedIDs[idStateType], this.idsRangesSizes[core.coreSize]),
       }),
       {}
     );
