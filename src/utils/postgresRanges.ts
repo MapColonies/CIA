@@ -1,3 +1,5 @@
+import { ResponseCoreIDColumnTypes } from "src/core/types";
+
 type Bound = 'upper' | 'lower';
 type Inclusion = 'open' | 'closed';
 
@@ -25,7 +27,7 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
   return end + add;
 }
 
-export function rangeToObj(startKey: string, endKey: string, closedRange: string): Record<string, number> {
+export function rangeToObj(startKey: ResponseCoreIDColumnTypes, endKey: ResponseCoreIDColumnTypes, closedRange: string): Record<ResponseCoreIDColumnTypes, number> {
   const idsRange: Record<string, number> = {};
   idsRange[startKey] = getIntRangeBound(closedRange, 'lower');
   idsRange[endKey] = getIntRangeBound(closedRange, 'upper');

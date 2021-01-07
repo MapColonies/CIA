@@ -3,10 +3,36 @@ import { ILoggerConfig, IServiceConfig, MCLogger } from '@map-colonies/mc-logger
 import { Probe } from '@map-colonies/mc-probe';
 import config from 'config';
 import { container } from 'tsyringe';
-import { createConnection, getRepository } from 'typeorm';
-import { Core as CoreModel } from './core/models/core';
+import { createConnection, getRepository, Repository } from 'typeorm';
 import { Services } from './common/constants';
 import { IDsRangesSizes } from './core/interfaces';
+import { Core as CoreModel } from './core/models/core';
+import { getIntRangeBound } from './utils/postgresRanges';
+import { CurrentAllocatedID, CoreIDColumnTypes } from './core/types';
+import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, DEFAULT_IDS } from './core/constants';
+
+async function initializeIDs(repository: Repository<CoreModel>): Promise<CurrentAllocatedID> {
+  const initializedIDs = { ...DEFAULT_IDS } as CurrentAllocatedID;
+
+  const columnNames = Object.keys(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE) as CoreIDColumnTypes[];
+
+  const lastAllocation = await repository.findOne({
+    order: { id: 'DESC' },
+    select: columnNames,
+  });
+
+  if (!lastAllocation) return initializedIDs; // The database is empty, no need to initialize properties
+
+  for (const coreModelColumn of columnNames) {
+    // Extract the upper bound of IDs allocation range
+    const upperBound = getIntRangeBound(lastAllocation[coreModelColumn], 'upper');
+    // Update the state of allocated IDs
+    const idStateType = COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE[coreModelColumn];
+    initializedIDs[idStateType] = upperBound;
+  }
+
+  return initializedIDs;
+}
 
 async function registerExternalValues(): Promise<void> {
   const loggerConfig = config.get<ILoggerConfig>('logger');
@@ -26,9 +52,12 @@ async function registerExternalValues(): Promise<void> {
   await createConnection();
   const coreRepository = getRepository(CoreModel);
 
+  const initialAllocationIDs = await initializeIDs(coreRepository);
+
   container.register<Probe>(Probe, { useValue: new Probe(logger, {}) });
   container.register('CoreRepository', { useValue: coreRepository });
   container.register('CORE_IDS_RANGES_SIZES', { useValue: CORE_IDS_RANGES_SIZES });
+  container.register('InitialAllocationIDs', { useValue: initialAllocationIDs });
 }
 
 export { registerExternalValues };

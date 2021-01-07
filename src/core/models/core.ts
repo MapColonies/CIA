@@ -1,15 +1,15 @@
 import {
   Column, CreateDateColumn, Entity, Exclusion, Generated, PrimaryGeneratedColumn, UpdateDateColumn
 } from 'typeorm';
-
-export type CoreSize = "small" | "medium" | "large";
+import { ICore } from '../interfaces';
+import { CoreSize } from '../types';
 
 @Entity()
 @Exclusion(`USING gist ("allocated_node_ids_range" WITH &&)`)
 @Exclusion(`USING gist ("allocated_way_ids_range" WITH &&)`)
 @Exclusion(`USING gist ("allocated_relation_ids_range" WITH &&)`)
 @Exclusion(`USING gist ("allocated_changeset_ids_range" WITH &&)`)
-export class Core {
+export class Core implements ICore {
   @PrimaryGeneratedColumn({ name: 'id' })
   public readonly id!: number;
 
@@ -42,8 +42,8 @@ export class Core {
   public readonly allocatedChangesetIDsRange!: string;
 
   @CreateDateColumn({ name: 'allocation_date_created' })
-  private readonly allocationDateCreated!: string; // TODO: check if type can be changed to Date
+  public readonly allocationDateCreated!: string; // TODO: check if type can be changed to Date
 
   @UpdateDateColumn({ name: 'allocation_date_updated' })
-  private readonly allocationDateUpdated!: string;
+  public readonly allocationDateUpdated!: string;
 }

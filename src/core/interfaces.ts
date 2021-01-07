@@ -1,16 +1,22 @@
-import { CoreSize } from 'src/core/models/core';
+import { CoreSize } from './types';
 
-export interface CurrentAllocatedID {
-  [index: string]: number;
-  node: number;
-  way: number;
-  relation: number;
-  changeset: number;
-}
 export interface IDsRangesSizes {
   small: number;
   medium: number;
   large: number;
+}
+
+export interface ICore {
+  readonly id: number;
+  coreSize: CoreSize;
+  description: string;
+  readonly coreID: string;
+  readonly allocatedNodeIDsRange: string;
+  readonly allocatedWayIDsRange: string;
+  readonly allocatedRelationIDsRange: string;
+  readonly allocatedChangesetIDsRange: string;
+  readonly allocationDateCreated: string;
+  readonly allocationDateUpdated: string;
 }
 
 export interface IResponseCore {

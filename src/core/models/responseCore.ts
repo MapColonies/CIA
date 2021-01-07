@@ -1,6 +1,7 @@
 import { rangeToObj } from '../../utils/postgresRanges';
 import { IResponseCore } from '../interfaces';
-import { Core as CoreModel, CoreSize } from './core';
+import { CoreSize } from '../types';
+import { Core as CoreModel } from './core';
 
 export class ResponseCore implements IResponseCore {
   public readonly id!: number;
@@ -25,12 +26,12 @@ export class ResponseCore implements IResponseCore {
 
     // Create a respone core witch transforms IDs allocation ranges to core ends
     const responseCore = {
-      ...(partialResponseCore as IResponseCore),
+      ...partialResponseCore,
       ...rangeToObj('allocatedNodeIdStart', 'allocatedNodeIdEnd', allocatedNodeIDsRange),
       ...rangeToObj('allocatedWayIdStart', 'allocatedWayIdEnd', allocatedWayIDsRange),
       ...rangeToObj('allocatedRelationIdStart', 'allocatedRelationIdEnd', allocatedRelationIDsRange),
       ...rangeToObj('allocatedChangesetIdStart', 'allocatedChangesetIdEnd', allocatedChangesetIDsRange),
-    };
+    } as IResponseCore;
     return responseCore;
   }
 }
