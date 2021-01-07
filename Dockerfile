@@ -14,13 +14,7 @@ WORKDIR /usr/app
 
 COPY ./package*.json ./
 RUN npm ci --production
-# COPY ./docs ./docs
 COPY ./config ./config
 COPY --from=build /usr/src/app/dist .
-
-# RUN chown -R app . && \
-#     mkdir -p /home/app/.config /home/app/.npm && \
-#     chown -R app:app /home/app/.config /home/app/.npm
-# USER app:app
 
 CMD ["node", "index.js"]
