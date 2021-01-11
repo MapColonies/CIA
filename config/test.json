@@ -1,5 +1,5 @@
 {
-  "swagger": {
+  "openapiConfig": {
     "jsonPath": "/api-json",
     "uiPath": "/api-docs"
   },

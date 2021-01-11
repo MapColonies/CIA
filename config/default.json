@@ -1,5 +1,5 @@
 {
-  "swaggerConfig": {
+  "openapiConfig": {
     "filePath": "./docs/openapi3-cia.yaml",
     "basePath": "/docs",
     "jsonPath": "/api.json",
