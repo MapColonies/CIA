@@ -2,16 +2,14 @@
   {
     "name": "default",
     "type": "postgres",
-    "host": "172.17.0.1",
+    "host": "localhost",
     "port": "5432",
     "username": "postgres",
     "password": "Aa123456",
     "database": "postgres",
     "schema": "public",
-    "synchronize": "false",
-    "logging": "false",
-    "migrationsRun": "false",
-    "entities": ["src/core/models/**/*.js"],
+    "migrations": ["migrations/*.ts"],
+    "entities": ["src/core/models/**/*.{ts,js}"],
     "cli": {
       "entitiesDir": "src/core/models",
       "migrationsDir": "migrations"
@@ -20,15 +18,12 @@
   {
     "name": "test",
     "type": "postgres",
-    "host": "172.17.0.1",
+    "host": "localhost",
     "port": "5432",
     "username": "postgres",
     "password": "Aa123456",
     "database": "cia_test",
     "schema": "public",
-    "synchronize": "false",
-    "logging": "false",
-    "migrationsRun": "false",
     "entities": ["src/core/models/**/*.ts"],
     "cli": {
       "entitiesDir": "src/core/models",

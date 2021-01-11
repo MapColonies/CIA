@@ -12,13 +12,14 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "release": "standard-version",
-    "test": "npm run lint && npm run test:unit && npm run test:integration",
+    "test": "npm run test:unit && npm run test:integration",
+    "prebuild": "npm run clear",
     "build": "tsc --project tsconfig.build.json && copyfiles ./docs/* ./config/* ./package.json dist",
     "clear": "rimraf dist",
-    "start": "npm run clear && npm run build && cd dist && node ./index.js",
+    "start": "npm run build && cd dist && node ./index.js",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "typeorm:create": "npm run typeorm migration:create -- -n",
-    "typeorm:migrate": "npm run clear && npm run build && npm run typeorm migration:generate -- -n",
+    "typeorm:generate": "npm run typeorm migration:generate -- -n",
     "typeorm:run": "npm run typeorm migration:run",
     "typeorm:revert": "npm run typeorm migration:revert"
   },
@@ -97,14 +98,5 @@
     "swagger-ui-express": "^4.1.4",
     "tsyringe": "^4.3.0",
     "typeorm": "^0.2.29"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageReporters": [
-      "text",
-      "html"
-    ]
   }
 }

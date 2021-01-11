@@ -1,7 +1,7 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitializeSchema1607521069331 implements MigrationInterface {
-    name = 'InitializeSchema1607521069331'
+export class InitializeSchema1610359487585 implements MigrationInterface {
+    name = 'InitializeSchema1610359487585'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."core_core_size_enum" AS ENUM('small', 'medium', 'large')`);

@@ -1,20 +1,9 @@
-import { ICore, IResponseCore } from './interfaces';
+import { RESPONSE_CORE_ID_COLUMNS, ID_TYPES, CORE_ID_COLUMNS, CORE_SIZES } from './constants';
 
-export type CoreSize = 'small' | 'medium' | 'large';
-export type CoreIDColumnTypes = keyof Pick<
-  ICore,
-  'allocatedNodeIDsRange' | 'allocatedWayIDsRange' | 'allocatedRelationIDsRange' | 'allocatedChangesetIDsRange'
->;
-export type IDTypes = 'node' | 'way' | 'relation' | 'changeset';
-export type ResponseCoreIDColumnTypes = keyof Pick<
-  IResponseCore,
-  | 'allocatedNodeIdStart'
-  | 'allocatedNodeIdEnd'
-  | 'allocatedWayIdStart'
-  | 'allocatedWayIdEnd'
-  | 'allocatedRelationIdStart'
-  | 'allocatedRelationIdEnd'
-  | 'allocatedChangesetIdStart'
-  | 'allocatedChangesetIdEnd'
->;
-export type CurrentAllocatedID = Record<IDTypes, number>;
+export type CoreSize = typeof CORE_SIZES[number];
+export type CoreIDColumn = typeof CORE_ID_COLUMNS[number];
+export type IDType = typeof ID_TYPES[number];
+export type ResponseCoreIDColumn = typeof RESPONSE_CORE_ID_COLUMNS[number];
+export type CoreCurrentAllocatedIDsRange = Record<CoreIDColumn, string>;
+export type CurrentAllocatedID = Record<IDType, number>;
+export type ColumnsToTypesMapping = Record<CoreIDColumn, IDType>;

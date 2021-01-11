@@ -1,4 +1,6 @@
 import faker from 'faker';
+import { ID_COLUMNS } from '../../../src/core/constants';
+import { ResponseCoreIDColumn, ResponseCoreIDColumnTypes } from '../../../src/core/types';
 import { rangeFormatter, getIntRangeBound, rangeToObj } from '../../../src/utils/postgresRanges';
 
 let start: number, end: number;
@@ -84,12 +86,19 @@ describe('postgresRanges', () => {
   });
   describe('rangeToObj', () => {
     it('Should create a valid', () => {
-      const startKey = faker.random.word();
-      const endKey = faker.random.word();
-      
+      let startKey: ResponseCoreIDColumn, endKey: ResponseCoreIDColumn;
+      const idColumn: ResponseCoreIDColumn = faker.random.arrayElement(ID_COLUMNS);
+      if (idColumn.endsWith('Start')) {
+        startKey = idColumn;
+        endKey = idColumn.replace('Start', 'End') as ResponseCoreIDColumn;
+      } else {
+        startKey = idColumn.replace('End', 'Start') as ResponseCoreIDColumn;
+        endKey = idColumn;
+      }
       const range = rangeToObj(startKey, endKey, `[${start}, ${end}]`);
 
-      const expected = { [startKey]: start, [endKey]: end }
+      const expected = { [startKey]: start, [endKey]: end };
+
       expect(range).toStrictEqual(expected);
     });
   });

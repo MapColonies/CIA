@@ -18,6 +18,6 @@
     "emitDecoratorMetadata": true,
     "lib": ["ES5", "ES6"],
   },
-  "include": ["./src", "./migrations", "index.ts"],
+  "include": ["./src", "migrations", "index.ts"],
   "exclude": ["node_modules", "dist", "tests"]
 }

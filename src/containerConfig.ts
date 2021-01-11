@@ -8,13 +8,13 @@ import { Services } from './common/constants';
 import { IDsRangesSizes } from './core/interfaces';
 import { Core as CoreModel } from './core/models/core';
 import { getIntRangeBound } from './utils/postgresRanges';
-import { CurrentAllocatedID, CoreIDColumnTypes } from './core/types';
+import { CurrentAllocatedID, CoreIDColumn } from './core/types';
 import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, DEFAULT_IDS } from './core/constants';
 
 async function initializeIDs(repository: Repository<CoreModel>): Promise<CurrentAllocatedID> {
   const initializedIDs = { ...DEFAULT_IDS } as CurrentAllocatedID;
 
-  const columnNames = Object.keys(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE) as CoreIDColumnTypes[];
+  const columnNames = Object.keys(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE) as CoreIDColumn[];
 
   const lastAllocation = await repository.findOne({
     order: { id: 'DESC' },

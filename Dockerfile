@@ -14,7 +14,6 @@ WORKDIR /usr/app
 
 COPY ./package*.json ./
 RUN npm ci --production
-COPY ./config ./config
 COPY --from=build /usr/src/app/dist .
 
 CMD ["node", "index.js"]

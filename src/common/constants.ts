@@ -1,4 +1,4 @@
-export const DEFAULT_SERVER_PORT = 80;
+export const DEFAULT_SERVER_PORT = 8080;
 
 export enum Services {
   LOGGER = 'ILogger',

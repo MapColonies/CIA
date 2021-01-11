@@ -1,10 +1,6 @@
 import { CoreSize } from './types';
 
-export interface IDsRangesSizes {
-  small: number;
-  medium: number;
-  large: number;
-}
+export interface IDsRangesSizes extends Record<CoreSize, number> {}
 
 export interface ICore {
   readonly id: number;
@@ -15,8 +11,8 @@ export interface ICore {
   readonly allocatedWayIDsRange: string;
   readonly allocatedRelationIDsRange: string;
   readonly allocatedChangesetIDsRange: string;
-  readonly allocationDateCreated: string;
-  readonly allocationDateUpdated: string;
+  readonly allocationDateCreated: Date;
+  readonly allocationDateUpdated: Date;
 }
 
 export interface IResponseCore {

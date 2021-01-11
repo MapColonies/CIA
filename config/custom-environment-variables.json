@@ -1,0 +1,18 @@
+{
+  "openapiConfig": {
+    "filePath": "OPENAPI_FILE_PATH"
+  },
+  "logger": {
+    "level": "LOG_LEVEL"
+  },
+  "server": {
+    "port": "SERVER_PORT"
+  },
+  "core": {
+    "sizes": {
+      "small": "CORE_IDS_RANGES_SIZES_SMALL",
+      "medium": "CORE_IDS_RANGES_SIZES_MEDIUM",
+      "large": "CORE_IDS_RANGES_SIZES_LARGE"
+    }
+  }
+}

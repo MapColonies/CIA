@@ -1,0 +1,21 @@
+{
+  "swaggerConfig": {
+    "filePath": "./docs/openapi3-cia.yaml",
+    "basePath": "/docs",
+    "jsonPath": "/api.json",
+    "uiPath": "/api"
+  },
+  "logger": {
+    "level": "info"
+  },
+  "server": {
+    "port": 8080
+  },
+  "core": {
+    "sizes": {
+      "small": 10000,
+      "medium": 1000000,
+      "large": 100000000
+    }
+  }
+}

@@ -8,7 +8,7 @@ import { IDsRangesSizes, IResponseCore } from './interfaces';
 import { Core as CoreModel } from './models/core';
 import { CoreNotFoundError } from './models/errors';
 import { ResponseCore } from './models/responseCore';
-import { CurrentAllocatedID, IDTypes } from './types';
+import { CoreCurrentAllocatedIDsRange, CoreIDColumn, CurrentAllocatedID } from './types';
 
 @injectable()
 export class CoreManager {
@@ -55,21 +55,19 @@ export class CoreManager {
     return rangeFormatter(lastID + 1, lastID + allocationSize); // Format range to Postgresql range format
   }
 
-  private allocateAllIDsRange(core: CoreModel): Partial<CoreModel> {
+  private allocateAllIDsRange(core: CoreModel): CoreModel {
     const columnToTypeMapping = Object.entries(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE);
+    const allocatedIDsRanges: CoreCurrentAllocatedIDsRange = {} as CoreCurrentAllocatedIDsRange;
 
-    // Create an object with allocated IDs ranges for all ID columns
-    const allocatedIDsRanges = columnToTypeMapping.reduce(
-      (o, [coreModelColumn, idStateType]) => ({
-        ...o,
-        [coreModelColumn]: this.allocateIDsRange(this.currentAllocatedIDs[idStateType], this.idsRangesSizes[core.coreSize]),
-      }),
-      {}
-    );
+    for (const [coreModelColumn, idStateType] of columnToTypeMapping) {
+      // Create an object with allocated IDs ranges for all ID columns
+      allocatedIDsRanges[coreModelColumn as CoreIDColumn] = this.allocateIDsRange(
+        this.currentAllocatedIDs[idStateType],
+        this.idsRangesSizes[core.coreSize]
+      );
 
-    // Update current ID state of CoreManager
-    for (const idStateType in this.currentAllocatedIDs) {
-      this.currentAllocatedIDs[idStateType as IDTypes] += this.idsRangesSizes[core.coreSize];
+      // Update current ID state of CoreManager
+      this.currentAllocatedIDs[idStateType] += this.idsRangesSizes[core.coreSize];
     }
 
     return { ...core, ...allocatedIDsRanges };

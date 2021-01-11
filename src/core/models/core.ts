@@ -42,8 +42,8 @@ export class Core implements ICore {
   public readonly allocatedChangesetIDsRange!: string;
 
   @CreateDateColumn({ name: 'allocation_date_created' })
-  public readonly allocationDateCreated!: string; // TODO: check if type can be changed to Date
+  public readonly allocationDateCreated!: Date;
 
   @UpdateDateColumn({ name: 'allocation_date_updated' })
-  public readonly allocationDateUpdated!: string;
+  public readonly allocationDateUpdated!: Date;
 }

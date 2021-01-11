@@ -1,9 +1,6 @@
 # Custom gitignors ignores goes here, below
 reports
 
-# Config
-config
-
 #IDE
 *code-workspace
 .vscode
