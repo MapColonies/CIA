@@ -7,10 +7,10 @@ import { getApp } from './src/app';
 import { DEFAULT_SERVER_PORT } from './src/common/constants';
 
 async function main(): Promise<void> {
-  const port = config.get<number | undefined>('server.port') ?? DEFAULT_SERVER_PORT;
+  const port = config.get<number | undefined>('server.port');
   const app = await getApp();
   const probe = container.resolve(Probe);
-  await probe.start(app, port);
+  await probe.start(app, port === undefined ? Number(port) : DEFAULT_SERVER_PORT);
   probe.readyFlag = true;
 }
 

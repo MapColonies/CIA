@@ -41,9 +41,9 @@ async function registerExternalValues(): Promise<void> {
   const logger = new MCLogger(loggerConfig, service);
 
   const CORE_IDS_RANGES_SIZES: IDsRangesSizes = {
-    small: config.get<number>('core.sizes.small'),
-    medium: config.get<number>('core.sizes.medium'),
-    large: config.get<number>('core.sizes.large'),
+    small: Number(config.get<number>('core.sizes.small')),
+    medium: Number(config.get<number>('core.sizes.medium')),
+    large: Number(config.get<number>('core.sizes.large')),
   };
 
   container.register(Services.CONFIG, { useValue: config });
