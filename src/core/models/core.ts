@@ -1,6 +1,4 @@
-import {
-  Column, CreateDateColumn, Entity, Exclusion, Generated, PrimaryGeneratedColumn, UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, Exclusion, Generated, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { ICore } from '../interfaces';
 import { CoreSize } from '../types';
 

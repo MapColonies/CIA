@@ -27,8 +27,8 @@ servers:
         description: string api version
         default: v1
 tags:
-- name: cores
-  description: Operations on cores
+  - name: cores
+    description: Operations on cores
 paths:
   /cores:
     summary: Cores Allocated IDs
@@ -176,8 +176,8 @@ components:
     Core:
       type: object
       required:
-      - coreSize
-      - description
+        - coreSize
+        - description
       properties:
         id:
           description: id
@@ -281,9 +281,9 @@ components:
     Error:
       type: object
       required:
-      - message
+        - message
       properties:
         message:
           type: string
       example:
-        message: "server error"
+        message: 'server error'

@@ -37,10 +37,7 @@ export class ServerBuilder {
     this.serverInstance.use(cors());
     this.serverInstance.use(bodyParser.json());
 
-    const ignorePathRegex = new RegExp(
-      `^${this.config.get<string>('swaggerConfig.basePath')}/.*`,
-      'i'
-    );
+    const ignorePathRegex = new RegExp(`^${this.config.get<string>('swaggerConfig.basePath')}/.*`, 'i');
     const apiSpecPath = this.config.get<string>('swaggerConfig.filePath');
     this.serverInstance.use(
       OpenApiMiddleware({

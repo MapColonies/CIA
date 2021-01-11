@@ -25,7 +25,7 @@ export class DBUtils {
       allocatedWayIDsRange: `[${startID}, ${endID})`,
       allocatedRelationIDsRange: `[${startID}, ${endID})`,
       allocatedChangesetIDsRange: `[${startID}, ${endID})`,
-      id: faker.random.number({min: 1}),
+      id: faker.random.number({ min: 1 }),
       coreID: faker.random.uuid(),
     } as CoreModel;
 

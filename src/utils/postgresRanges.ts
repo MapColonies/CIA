@@ -1,10 +1,10 @@
-import { ResponseCoreIDColumn } from "src/core/types";
+import { ResponseCoreIDColumn } from 'src/core/types';
 
 type Bound = 'upper' | 'lower';
 type Inclusion = 'open' | 'closed';
 
 export function rangeFormatter(start: number, end: number, inclusion: Inclusion = 'closed'): string {
-    return inclusion === 'closed' ? `[${start}, ${end}]` : `(${start}, ${end})`;
+  return inclusion === 'closed' ? `[${start}, ${end}]` : `(${start}, ${end})`;
 }
 
 export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusion: Inclusion = 'closed'): number {
@@ -23,7 +23,7 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
     if (inclusion === 'closed') add -= upperBoundInclusion === 'closed' ? 0 : 1;
     else add += upperBoundInclusion === 'open' ? 0 : 1;
   }
-  
+
   return end + add;
 }
 

@@ -38,7 +38,7 @@ export class CoresController {
     }
     res.status(HttpStatus.OK).json(core);
   };
-  
+
   public createCore: CreateCoreHandler = async (req, res, next) => {
     const coreModel = req.body;
     let core: IResponseCore;
