@@ -1,6 +1,6 @@
 {
   "openapiConfig": {
-    "filePath": "./docs/openapi3-cia.yaml",
+    "filePath": "./openapi3.yaml",
     "basePath": "/docs",
     "jsonPath": "/api.json",
     "uiPath": "/api"
@@ -9,7 +9,7 @@
     "level": "info"
   },
   "server": {
-    "port": 8080
+    "port": "8080"
   },
   "core": {
     "sizes": {
@@ -17,5 +17,13 @@
       "medium": 1000000,
       "large": 100000000
     }
+  },
+  "db": {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "1234",
+    "database": "cia"
   }
 }

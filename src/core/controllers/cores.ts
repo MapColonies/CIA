@@ -1,16 +1,15 @@
 import { RequestHandler } from 'express';
-import HttpStatus from 'http-status-codes';
-import { HttpError } from 'src/common/errors';
 import { ParamsDictionary } from 'express-serve-static-core';
+import HttpStatus from 'http-status-codes';
 import { injectable } from 'tsyringe';
-import { Core as CoreModel } from '../../core/models/core';
+import { HttpError } from '../../common/errors';
 import { CoreManager } from '../coreManager';
 import { IResponseCore } from '../interfaces';
 import { CoreNotFoundError } from '../models/errors';
-import { CoreSize } from '../types';
+import { InputCore } from '../types';
 
 type GetCoresHandler = RequestHandler<ParamsDictionary, IResponseCore[]>;
-type CreateCoreHandler = RequestHandler<ParamsDictionary, IResponseCore, { coreSize: CoreSize; description: string }>;
+type CreateCoreHandler = RequestHandler<ParamsDictionary, IResponseCore, InputCore>;
 type GetCoreByIdHandler = RequestHandler<ParamsDictionary, IResponseCore>;
 
 @injectable()
@@ -32,7 +31,9 @@ export class CoresController {
     try {
       core = await this.coreManager.findCoreById(req.params.coreId);
     } catch (error) {
-      if (error instanceof CoreNotFoundError) (error as HttpError).status = HttpStatus.NOT_FOUND;
+      if (error instanceof CoreNotFoundError) {
+        return next(new HttpError('Core not found', HttpStatus.NOT_FOUND));
+      }
 
       return next(error);
     }
@@ -47,12 +48,12 @@ export class CoresController {
       core = await this.coreManager.allocateIDs({
         coreSize: coreModel.coreSize,
         description: coreModel.description,
-      } as CoreModel);
+      });
     } catch (error) {
       return next(error);
     }
 
-    const host = req.headers?.host ?? req.hostname;
+    const host = req.headers.host ?? req.hostname;
     const locationHeader = `${req.protocol}://${host}${req.baseUrl}/cores/${core.coreID}`;
     res.status(HttpStatus.CREATED).header('Location', locationHeader).json(core);
   };

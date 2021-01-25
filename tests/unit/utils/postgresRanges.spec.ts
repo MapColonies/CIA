@@ -1,6 +1,6 @@
 import faker from 'faker';
-import { ID_COLUMNS } from '../../../src/core/constants';
-import { ResponseCoreIDColumn, ResponseCoreIDColumnTypes } from '../../../src/core/types';
+import { RESPONSE_CORE_ID_COLUMNS } from '../../../src/core/constants';
+import { ResponseCoreIDColumn } from '../../../src/core/types';
 import { rangeFormatter, getIntRangeBound, rangeToObj } from '../../../src/utils/postgresRanges';
 
 let start: number, end: number;
@@ -85,9 +85,9 @@ describe('postgresRanges', () => {
     });
   });
   describe('rangeToObj', () => {
-    it('Should create a valid', () => {
+    it('Should create a valid range object', () => {
       let startKey: ResponseCoreIDColumn, endKey: ResponseCoreIDColumn;
-      const idColumn: ResponseCoreIDColumn = faker.random.arrayElement(ID_COLUMNS);
+      const idColumn: ResponseCoreIDColumn = faker.random.arrayElement(RESPONSE_CORE_ID_COLUMNS);
       if (idColumn.endsWith('Start')) {
         startKey = idColumn;
         endKey = idColumn.replace('Start', 'End') as ResponseCoreIDColumn;

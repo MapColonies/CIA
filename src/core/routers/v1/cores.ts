@@ -6,8 +6,9 @@ const coresRoutesFactory: FactoryFunction<Router> = (dependencyContainer): Route
   const coresRouter = Router();
   const controller = dependencyContainer.resolve(CoresController);
 
-  coresRouter.route('/cores').get(controller.getCores).post(controller.createCore);
-  coresRouter.route('/cores/:coreId').get(controller.getCoreByID);
+  coresRouter.get('/', controller.getCores);
+  coresRouter.post('/', controller.createCore);
+  coresRouter.get('/:coreId', controller.getCoreByID);
 
   return coresRouter;
 };

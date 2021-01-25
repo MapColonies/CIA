@@ -31,7 +31,7 @@ export class ResponseCore implements IResponseCore {
       ...rangeToObj('allocatedWayIdStart', 'allocatedWayIdEnd', allocatedWayIDsRange),
       ...rangeToObj('allocatedRelationIdStart', 'allocatedRelationIdEnd', allocatedRelationIDsRange),
       ...rangeToObj('allocatedChangesetIdStart', 'allocatedChangesetIdEnd', allocatedChangesetIDsRange),
-    } as IResponseCore;
+    };
     return responseCore;
   }
 }

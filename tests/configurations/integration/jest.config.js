@@ -10,7 +10,7 @@ module.exports = {
     'default',
     [
       'jest-html-reporters',
-      { multipleReportsUnitePath: './report', pageTitle: 'integration', publicPath: './reports', filename: 'integration.html' },
+      { multipleReportsUnitePath: './reports', pageTitle: 'integration', publicPath: './reports', filename: 'integration.html' },
     ],
   ],
   collectCoverage: true,

@@ -15,13 +15,19 @@ export function getIntRangeBound(range: string, bound: Bound = 'lower', inclusio
   if (bound === 'lower') {
     const lowerBoundInclusion: Inclusion = lower.startsWith('[') ? 'closed' : 'open';
     end = Number(lower.substring(1, lower.length));
-    if (inclusion === 'closed') add += lowerBoundInclusion === 'closed' ? 0 : 1;
-    else add -= lowerBoundInclusion === 'open' ? 0 : 1;
+    if (inclusion === 'closed') {
+      add += lowerBoundInclusion === 'closed' ? 0 : 1;
+    } else {
+      add -= lowerBoundInclusion === 'open' ? 0 : 1;
+    }
   } else {
     const upperBoundInclusion: Inclusion = upper.endsWith(']') ? 'closed' : 'open';
     end = Number(upper.substring(0, upper.length - 1));
-    if (inclusion === 'closed') add -= upperBoundInclusion === 'closed' ? 0 : 1;
-    else add += upperBoundInclusion === 'open' ? 0 : 1;
+    if (inclusion === 'closed') {
+      add -= upperBoundInclusion === 'closed' ? 0 : 1;
+    } else {
+      add += upperBoundInclusion === 'open' ? 0 : 1;
+    }
   }
 
   return end + add;

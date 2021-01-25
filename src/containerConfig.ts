@@ -3,27 +3,28 @@ import { ILoggerConfig, IServiceConfig, MCLogger } from '@map-colonies/mc-logger
 import { Probe } from '@map-colonies/mc-probe';
 import config from 'config';
 import { container } from 'tsyringe';
-import { createConnection, getRepository, Repository } from 'typeorm';
+import { ConnectionOptions, createConnection, getRepository, Repository } from 'typeorm';
 import { Services } from './common/constants';
 import { IDsRangesSizes } from './core/interfaces';
 import { Core as CoreModel } from './core/models/core';
 import { getIntRangeBound } from './utils/postgresRanges';
-import { CurrentAllocatedID, CoreIDColumn } from './core/types';
-import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, DEFAULT_IDS } from './core/constants';
+import { CurrentAllocatedID } from './core/types';
+import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, CORE_ID_COLUMNS, DEFAULT_IDS } from './core/constants';
 
 async function initializeIDs(repository: Repository<CoreModel>): Promise<CurrentAllocatedID> {
-  const initializedIDs = { ...DEFAULT_IDS } as CurrentAllocatedID;
-
-  const columnNames = Object.keys(COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE) as CoreIDColumn[];
+  const initializedIDs = { ...DEFAULT_IDS };
 
   const lastAllocation = await repository.findOne({
     order: { id: 'DESC' },
-    select: columnNames,
+    select: [...CORE_ID_COLUMNS],
   });
 
-  if (!lastAllocation) return initializedIDs; // The database is empty, no need to initialize properties
+  if (!lastAllocation) {
+    // The database is empty, no need to initialize properties
+    return initializedIDs;
+  }
 
-  for (const coreModelColumn of columnNames) {
+  for (const coreModelColumn of CORE_ID_COLUMNS) {
     // Extract the upper bound of IDs allocation range
     const upperBound = getIntRangeBound(lastAllocation[coreModelColumn], 'upper');
     // Update the state of allocated IDs
@@ -49,7 +50,14 @@ async function registerExternalValues(): Promise<void> {
   container.register(Services.CONFIG, { useValue: config });
   container.register(Services.LOGGER, { useValue: logger });
 
-  await createConnection();
+  const connectionOptions = config.get<ConnectionOptions>('db');
+  await createConnection({
+    entities: ['core/models/**/*.js'],
+    migrations: ['migrations/**/*.ts'],
+    cli: { entitiesDir: 'core/models', migrationsDir: 'migrations' },
+    ...connectionOptions,
+  });
+
   const coreRepository = getRepository(CoreModel);
 
   const initialAllocationIDs = await initializeIDs(coreRepository);

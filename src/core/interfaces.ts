@@ -1,6 +1,6 @@
 import { CoreSize } from './types';
 
-export interface IDsRangesSizes extends Record<CoreSize, number> {}
+export type IDsRangesSizes = Record<CoreSize, number>;
 
 export interface ICore {
   readonly id: number;

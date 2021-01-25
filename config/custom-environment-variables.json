@@ -14,5 +14,16 @@
       "medium": "CORE_IDS_RANGES_SIZES_MEDIUM",
       "large": "CORE_IDS_RANGES_SIZES_LARGE"
     }
+  },
+  "db": {
+    "type": "DB_TYPE",
+    "host": "DB_HOST",
+    "port": {
+      "__name": "DB_PORT",
+      "__format": "number"
+    },
+    "username": "DB_USERNAME",
+    "password": "DB_PASSWORD",
+    "database": "DB_NAME"
   }
 }

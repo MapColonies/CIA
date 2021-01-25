@@ -19,4 +19,4 @@ export const COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE: ColumnsToTypesMapping = {
   allocatedRelationIDsRange: 'relation',
   allocatedChangesetIDsRange: 'changeset',
 };
-export const DEFAULT_IDS: CurrentAllocatedID = { node: 0, way: 0, relation: 0, changeset: 0 } as CurrentAllocatedID;
+export const DEFAULT_IDS: CurrentAllocatedID = { node: 0, way: 0, relation: 0, changeset: 0 };

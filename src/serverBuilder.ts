@@ -1,22 +1,23 @@
-import express from 'express';
+import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { inject, injectable } from 'tsyringe';
+import express, { Router } from 'express';
 import { middleware as OpenApiMiddleware } from 'express-openapi-validator';
-import { RequestLogger } from './common/middlewares/RequestLogger';
-import { ErrorHandler } from './common/middlewares/ErrorHandler';
+import { container, inject, injectable } from 'tsyringe';
 import { Services } from './common/constants';
-import { IConfig } from './common/interfaces';
-import { globalRoutesFactory } from './common/routes/global';
+import { IConfig, ILogger } from './common/interfaces';
+import { RequestLogger } from './common/middlewares/RequestLogger';
+import { openapiRouterFactory } from './common/routes/openapi';
+import { coresRoutesFactory } from './core/routers/v1/cores';
 
 @injectable()
 export class ServerBuilder {
   private readonly serverInstance = express();
 
   public constructor(
+    @inject(Services.LOGGER) private readonly logger: ILogger,
     @inject(Services.CONFIG) private readonly config: IConfig,
-    private readonly requestLogger: RequestLogger,
-    private readonly errorHandler: ErrorHandler
+    private readonly requestLogger: RequestLogger
   ) {
     this.serverInstance = express();
   }
@@ -29,8 +30,15 @@ export class ServerBuilder {
     return this.serverInstance;
   }
 
+  private readonly globalRoutesFactory = (): Router => {
+    const globalRouter = Router();
+    globalRouter.use(openapiRouterFactory(container));
+    globalRouter.use('/api/v1/cores', coresRoutesFactory(container));
+    return globalRouter;
+  };
+
   private buildRoutes(): void {
-    this.serverInstance.use(globalRoutesFactory());
+    this.serverInstance.use(this.globalRoutesFactory());
   }
 
   private registerPreRoutesMiddleware(): void {
@@ -51,6 +59,6 @@ export class ServerBuilder {
   }
 
   private registerPostRoutesMiddleware(): void {
-    this.serverInstance.use(this.errorHandler.getErrorHandlerMiddleware());
+    this.serverInstance.use(getErrorHandlerMiddleware((message) => this.logger.log('error', message)));
   }
 }

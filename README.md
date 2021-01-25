@@ -2,6 +2,7 @@
 Central IDs Allocation service, used to allocate IDs to OSM elements (Nodes, Ways and Relations) and OSM intristic properties that need distinct IDs ranges, such as Changesets.
 
 ## Usage
+### Quick Start
 To run this service locally use `npm start`. To run in a container
 ```shell
 git clone git@github.com:MapColonies/CIA.git
@@ -10,26 +11,20 @@ docker build -t mapcolonies/cia:latest .
 docker run -p 8080:8080 --rm -it --env-file ./ormconfig.prod.env mapcolonies/cia:latest
 ```
 
-## Configuration
+### Configuration
 Set the following environment variables
 * `SERVER_PORT` - application port e.g. `8080`
-* `HOST` - hostname e.g. `http://localhost`
-* `NODE_ENV` - `development` or `production`
+* `DB_TYPE` - DB type, currently only `postgres` is supported
+* `DB_HOST` - e.g. `localhost`
+* `DB_USERNAME` - e.g. `postgres`
+* `DB_PASSWORD` - e.g. `1234`
+* `DB_NAME` - e.g. `cia`
+* `DB_PORT` - e.g. `5432`
 
-Set the following optional environment variables
+The following environment variables are optional
 * `CORE_IDS_RANGES_SIZES_SMALL` - definition of a small IDs allocation range e.g. `1000`
 * `CORE_IDS_RANGES_SIZES_MEDIUM` - definition of a medium IDs allocation range e.g. `1000000`
 * `CORE_IDS_RANGES_SIZES_LARGE` - definition of a large IDs allocation range e.g. `1000000000`
-
-This service uses [TypeORM](https://github.com/typeorm/typeorm). If you use this service in development environment edit `ormconfig.json` and modify the environment variables to point to your PostgreSQL DB instance. See [ormconfig.env](https://typeorm.io/#/using-ormconfig/using-environment-variables) for more info. If this service is used in production supply the following environment variables instead of using `ormconfig.json`
-* `TYPEORM_CONNECTION` - DB type, currently only `postgres` is supported
-* `TYPEORM_HOST` - e.g. `localhost`
-* `TYPEORM_USERNAME` - e.g. `postgres`
-* `TYPEORM_PASSWORD` - e.g. `Aa123456`
-* `TYPEORM_DATABASE` - e.g. `postgres`
-* `TYPEORM_SCHEMA` - e.g. `public`
-* `TYPEORM_PORT` - e.g. `5432`
-* `TYPEORM_ENTITIES` - set to `src/core/models/**/*.js`
 
 ## Migrations
 Please follow best practices when writing and deploying migrations. Please use [these](http://ryanogles.by/database-migrations-best-practices/) best practices on how to commit migrations to source control.

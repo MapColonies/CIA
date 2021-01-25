@@ -1,4 +1,3 @@
-
 dist
 .github
 .gitignore
@@ -11,3 +10,5 @@ tsbuildconfig.json
 tsconfig.json
 node_modules
 *.html
+coverage
+reports
