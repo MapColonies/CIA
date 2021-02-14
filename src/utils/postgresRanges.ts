@@ -1,4 +1,4 @@
-import { ResponseCoreIDColumn } from 'src/core/types';
+import { ResponseCoreIDColumn } from '../core/types';
 
 type Bound = 'upper' | 'lower';
 type Inclusion = 'open' | 'closed';

@@ -1,6 +1,6 @@
-import { ILogger } from 'src/common/interfaces';
 import { inject, injectable } from 'tsyringe';
 import { Repository } from 'typeorm';
+import { ILogger } from '../common/interfaces';
 import { Services } from '../common/constants';
 import { rangeFormatter } from '../utils/postgresRanges';
 import { COLUMN_NAMES_TO_ID_STATE_HOLDER_TYPE, CORE_ID_COLUMNS, DEFAULT_IDS } from './constants';

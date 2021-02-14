@@ -12,18 +12,7 @@ info:
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   version: 1.0.0
 servers:
-  - url: http://localhost:8080/api/v1
-    description: CIA test server
-    variables:
-      port:
-        enum:
-          - '8080'
-          - '80'
-          - '443'
-        default: '8080'
-      basePath:
-        description: string api version
-        default: v1
+  - url: http://localhost:8080
 tags:
   - name: cores
     description: Operations on cores

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { FactoryFunction } from 'tsyringe';
-import { CoresController } from '../../controllers/cores';
+import { CoresController } from '../controllers/cores';
 
 const coresRoutesFactory: FactoryFunction<Router> = (dependencyContainer): Router => {
   const coresRouter = Router();

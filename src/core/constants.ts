@@ -1,4 +1,4 @@
-import { CurrentAllocatedID, ColumnsToTypesMapping } from 'src/core/types';
+import { CurrentAllocatedID, ColumnsToTypesMapping } from './types';
 
 export const ID_TYPES = ['node', 'way', 'relation', 'changeset'] as const;
 export const RESPONSE_CORE_ID_COLUMNS = [

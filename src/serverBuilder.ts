@@ -1,18 +1,17 @@
-import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
+import express from 'express';
 import bodyParser from 'body-parser';
-import cors from 'cors';
-import express, { Router } from 'express';
+import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
+import { OpenapiViewerRouter, OpenapiRouterConfig } from '@map-colonies/openapi-express-viewer';
 import { middleware as OpenApiMiddleware } from 'express-openapi-validator';
 import { container, inject, injectable } from 'tsyringe';
 import { Services } from './common/constants';
 import { IConfig, ILogger } from './common/interfaces';
 import { RequestLogger } from './common/middlewares/RequestLogger';
-import { openapiRouterFactory } from './common/routes/openapi';
-import { coresRoutesFactory } from './core/routers/v1/cores';
+import { coresRoutesFactory } from './core/routers/cores';
 
 @injectable()
 export class ServerBuilder {
-  private readonly serverInstance = express();
+  private readonly serverInstance: express.Application;
 
   public constructor(
     @inject(Services.LOGGER) private readonly logger: ILogger,
@@ -30,19 +29,18 @@ export class ServerBuilder {
     return this.serverInstance;
   }
 
-  private readonly globalRoutesFactory = (): Router => {
-    const globalRouter = Router();
-    globalRouter.use(openapiRouterFactory(container));
-    globalRouter.use('/api/v1/cores', coresRoutesFactory(container));
-    return globalRouter;
-  };
-
   private buildRoutes(): void {
-    this.serverInstance.use(this.globalRoutesFactory());
+    this.buildDocsRoutes();
+    this.serverInstance.use('/cores', coresRoutesFactory(container));
+  }
+
+  private buildDocsRoutes(): void {
+    const openapiRouter = new OpenapiViewerRouter(this.config.get<OpenapiRouterConfig>('openapiConfig'));
+    openapiRouter.setup();
+    this.serverInstance.use(this.config.get<string>('openapiConfig.basePath'), openapiRouter.getRouter());
   }
 
   private registerPreRoutesMiddleware(): void {
-    this.serverInstance.use(cors());
     this.serverInstance.use(bodyParser.json());
 
     const ignorePathRegex = new RegExp(`^${this.config.get<string>('openapiConfig.basePath')}/.*`, 'i');

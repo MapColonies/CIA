@@ -1,8 +1,4 @@
-import { readFileSync } from 'fs';
-import { ILoggerConfig, IServiceConfig, MCLogger } from '@map-colonies/mc-logger';
-import config from 'config';
 import faker from 'faker';
-import 'reflect-metadata';
 import { container } from 'tsyringe';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Services } from '../../../../src/common/constants';
@@ -17,15 +13,11 @@ import { CurrentAllocatedID, InputCore } from '../../../../src/core/types';
 
 let coreManager: CoreManager;
 
-const loggerConfig = config.get<ILoggerConfig>('logger');
-const packageContent = readFileSync('./package.json', 'utf8');
-const service = JSON.parse(packageContent) as IServiceConfig;
-const logger = new MCLogger(loggerConfig, service);
 const initialAllocationIDs = DEFAULT_IDS;
 
 beforeEach(() => {
   container.clearInstances();
-  container.register(Services.LOGGER, { useValue: logger });
+  container.register(Services.LOGGER, { useValue: { log: jest.fn() } });
   container.register('CORE_IDS_RANGES_SIZES', { useValue: CORE_IDS_RANGES_SIZES });
   container.register('InitialAllocationIDs', { useValue: { initialAllocationIDs } });
 });
@@ -55,7 +47,6 @@ describe('CoreManager', () => {
       const initialAllocationIDs: CurrentAllocatedID = { node: initialSize, way: initialSize, relation: initialSize, changeset: initialSize };
 
       // Re-register values for DI
-      container.register(Services.LOGGER, { useValue: logger });
       container.register('CORE_IDS_RANGES_SIZES', { useValue: CORE_IDS_RANGES_SIZES });
       container.register('InitialAllocationIDs', { useValue: initialAllocationIDs });
 
