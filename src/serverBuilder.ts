@@ -1,0 +1,62 @@
+import express from 'express';
+import bodyParser from 'body-parser';
+import { getErrorHandlerMiddleware } from '@map-colonies/error-express-handler';
+import { OpenapiViewerRouter, OpenapiRouterConfig } from '@map-colonies/openapi-express-viewer';
+import { middleware as OpenApiMiddleware } from 'express-openapi-validator';
+import { container, inject, injectable } from 'tsyringe';
+import { Services } from './common/constants';
+import { IConfig, ILogger } from './common/interfaces';
+import { RequestLogger } from './common/middlewares/RequestLogger';
+import { coresRoutesFactory } from './core/routers/cores';
+
+@injectable()
+export class ServerBuilder {
+  private readonly serverInstance: express.Application;
+
+  public constructor(
+    @inject(Services.LOGGER) private readonly logger: ILogger,
+    @inject(Services.CONFIG) private readonly config: IConfig,
+    private readonly requestLogger: RequestLogger
+  ) {
+    this.serverInstance = express();
+  }
+
+  public build(): express.Application {
+    this.registerPreRoutesMiddleware();
+    this.buildRoutes();
+    this.registerPostRoutesMiddleware();
+
+    return this.serverInstance;
+  }
+
+  private buildRoutes(): void {
+    this.buildDocsRoutes();
+    this.serverInstance.use('/cores', coresRoutesFactory(container));
+  }
+
+  private buildDocsRoutes(): void {
+    const openapiRouter = new OpenapiViewerRouter(this.config.get<OpenapiRouterConfig>('openapiConfig'));
+    openapiRouter.setup();
+    this.serverInstance.use(this.config.get<string>('openapiConfig.basePath'), openapiRouter.getRouter());
+  }
+
+  private registerPreRoutesMiddleware(): void {
+    this.serverInstance.use(bodyParser.json());
+
+    const ignorePathRegex = new RegExp(`^${this.config.get<string>('openapiConfig.basePath')}/.*`, 'i');
+    const apiSpecPath = this.config.get<string>('openapiConfig.filePath');
+    this.serverInstance.use(
+      OpenApiMiddleware({
+        apiSpec: apiSpecPath,
+        validateRequests: true,
+        ignorePaths: ignorePathRegex,
+      })
+    );
+
+    this.serverInstance.use(this.requestLogger.getLoggerMiddleware());
+  }
+
+  private registerPostRoutesMiddleware(): void {
+    this.serverInstance.use(getErrorHandlerMiddleware((message) => this.logger.log('error', message)));
+  }
+}

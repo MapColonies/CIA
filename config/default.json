@@ -1,0 +1,29 @@
+{
+  "openapiConfig": {
+    "filePath": "./openapi3.yaml",
+    "basePath": "/docs",
+    "rawPath": "/api",
+    "uiPath": "/api"
+  },
+  "logger": {
+    "level": "info"
+  },
+  "server": {
+    "port": "8080"
+  },
+  "core": {
+    "sizes": {
+      "small": 10000,
+      "medium": 1000000,
+      "large": 100000000
+    }
+  },
+  "db": {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "avi",
+    "password": "avi",
+    "database": "avi"
+  }
+}

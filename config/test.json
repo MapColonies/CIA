@@ -1,0 +1,9 @@
+{
+  "openapiConfig": {
+    "jsonPath": "/api-json",
+    "uiPath": "/api-docs"
+  },
+  "logger": {
+    "level": "error"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "name": "@map-colonies/cia",
+  "version": "0.1.0",
+  "description": "Central IDs allocation service",
+  "main": "index.ts",
+  "scripts": {
+    "test": "npm run test:unit",
+    "test:unit": "jest --config=./tests/configurations/unit/jest.config.js",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "prelint:fix": "npm run format:fix",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:openapi": "openapi lint ./openapi3.yaml",
+    "release": "standard-version",
+    "assets:copy": "copyfiles ./openapi3.yaml ./config/* ./package.json dist",
+    "prebuild": "npm run clean",
+    "build": "tsc --project tsconfig.build.json",
+    "postbuild": "npm run assets:copy",
+    "clean": "rimraf dist",
+    "start": "npm run build && cd dist && node ./index.js",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm:create": "npm run typeorm migration:create -- -n",
+    "typeorm:generate": "npm run typeorm migration:generate -- -n",
+    "typeorm:run": "npm run typeorm migration:run",
+    "typeorm:revert": "npm run typeorm migration:revert"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "author": {
+    "name": "MapColonies",
+    "email": "mapcolonies@gmail.com",
+    "url": "https://github.com/MapColonies"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mapcolonies/cia.git"
+  },
+  "license": "ISC",
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^10.0.0",
+    "@map-colonies/eslint-config": "^2.1.0",
+    "@map-colonies/prettier-config": "0.0.1",
+    "@redocly/openapi-cli": "^1.0.0-beta.31",
+    "@types/config": "0.0.36",
+    "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.8",
+    "@types/faker": "^5.1.5",
+    "@types/is-uuid": "^1.0.0",
+    "@types/jest": "^26.0.12",
+    "@types/js-yaml": "^3.12.5",
+    "@types/multer": "^1.4.5",
+    "@types/node": "^14.14.9",
+    "@types/supertest": "^2.0.10",
+    "@types/swagger-ui-express": "^4.1.2",
+    "@types/yamljs": "^0.2.31",
+    "@typescript-eslint/eslint-plugin": "^4.9.0",
+    "@typescript-eslint/parser": "^4.9.0",
+    "commitlint": "^9.1.2",
+    "copyfiles": "^2.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^7.8.1",
+    "faker": "^5.1.0",
+    "husky": "^4.2.5",
+    "jest": "^26.4.2",
+    "jest-create-mock-instance": "^1.1.0",
+    "jest-html-reporters": "^2.0.3",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "standard-version": "^9.0.0",
+    "supertest": "^6.0.1",
+    "ts-jest": "^26.3.0",
+    "ts-node": "^9.1.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@map-colonies/error-express-handler": "^1.2.0",
+    "@map-colonies/mc-logger": "^1.2.1",
+    "@map-colonies/mc-model-types": "^1.0.1",
+    "@map-colonies/mc-probe": "^1.0.0",
+    "@map-colonies/openapi-express-viewer": "^2.0.1",
+    "body-parser": "^1.19.0",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "express-openapi-validator": "^4.10.1",
+    "http-status-codes": "^2.1.2",
+    "js-yaml": "^3.14.1",
+    "multer": "^1.4.2",
+    "pg": "^8.5.1",
+    "reflect-metadata": "^0.1.13",
+    "swagger-ui-express": "^4.1.4",
+    "tsyringe": "^4.3.0",
+    "typeorm": "^0.2.29"
+  }
+}
